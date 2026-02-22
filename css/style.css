@@ -1,0 +1,159 @@
+/* Base Mobile-First */
+:root {
+    /* Fallback padrão (Ruby Red) */
+    --color-primary: #C62828;
+    --color-primary-hover: #B71C1C;
+    --color-badge-main: #E53935;
+    --color-badge-alt: #FFCDD2;
+    --color-highlight: #FFD700;
+    --color-price: #B71C1C;
+    --color-chip-bg: #FEE2E2;
+    --color-chip-text: #991B1B;
+    --color-text-on-primary: #FFFFFF;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Sobrescritas para elementos Tailwind baseados no tema */
+.bg-blue-600 { background-color: var(--color-primary) !important; }
+.hover\:bg-blue-700:hover { background-color: var(--color-primary-hover) !important; }
+.text-blue-600 { color: var(--color-primary) !important; }
+.border-blue-600 { border-color: var(--color-primary) !important; }
+.ring-blue-100 { --tw-ring-color: var(--color-badge-alt) !important; }
+
+/* Filtros de Badges */
+.filter-badge {
+    padding: 8px 20px;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid var(--color-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-badge-active {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+    box-shadow: 0 10px 20px -5px color-mix(in srgb, var(--color-primary), transparent 70%);
+}
+
+.filter-badge-inactive {
+    background-color: transparent;
+    color: var(--color-primary);
+}
+
+.filter-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px -8px color-mix(in srgb, var(--color-primary), transparent 75%);
+}
+
+.filter-badge:active {
+    transform: scale(0.95);
+}
+
+/* Componente de Busca do Hero (Dinâmico) */
+.btn-search-hero {
+    background-color: var(--color-primary) !important;
+    color: var(--color-text-on-primary) !important;
+    box-shadow: 0 20px 40px -10px color-mix(in srgb, var(--color-primary), transparent 70%) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-search-hero:hover {
+    background-color: var(--color-primary-hover) !important;
+    box-shadow: 0 25px 50px -12px color-mix(in srgb, var(--color-primary), transparent 60%) !important;
+    transform: translateY(-2px);
+}
+
+/* WhatsApp Native Floating Button */
+.whatsapp-btn-native {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 64px;
+    height: 64px;
+    z-index: 9999;
+    border-radius: 50%;
+    background-color: transparent;
+    background-image: url("https://urcrpzbxxomluvyxucvj.supabase.co/storage/v1/object/public/assets/icone_whatsapp.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 65%;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    animation: whatsapp-pulse 2.5s infinite;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: none; /* será exibido via JS se houver número */
+    align-items: center;
+    justify-content: center;
+}
+
+.whatsapp-btn-native:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes whatsapp-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); }
+    70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+/* HERO SECTION CUSTOM */
+.hero-home {
+  position: relative;
+  min-height: 520px;
+  background-image: var(--hero-bg-desktop);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-home::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 10, 25, 0.5),
+    rgba(5, 10, 25, 0.8)
+  );
+  z-index: 1;
+}
+
+.hero-home .hero-content {
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
+}
+
+.hero-home h1 { text-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
+.hero-home p { text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
+
+@media (max-width: 768px) {
+  .hero-home {
+    min-height: 550px;
+    background-image: var(--hero-bg-mobile, var(--hero-bg-desktop));
+    background-position: center top;
+  }
+}
+
+/* GRID DE IMÓVEIS */
+#lista-imoveis { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); 
+    gap: 40px; 
+}
