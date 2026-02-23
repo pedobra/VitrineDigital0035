@@ -100,87 +100,377 @@
 
                 <!-- SEÇÕES OCULTAS QUE ABREM CONFORME DOCUMENTO -->
                 <div id="campos-detalhados"
-                    class="hidden space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    class="hidden space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
-                    <!-- DADOS BÁSICOS (COMUM) -->
-                    <section class="space-y-6">
-                        <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span class="w-1.5 h-6 bg-blue-600 rounded-full"></span>
-                            Dados Gerais
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="md:col-span-2">
-                                <label id="label-nome" class="block text-sm font-semibold mb-2 text-slate-700">Nome
-                                    Completo</label>
-                                <input id="f-nome" type="text" required
-                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                            <div id="div-fantasia" class="hidden">
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">Nome Fantasia</label>
-                                <input id="f-fantasia" type="text"
-                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">E-mail</label>
-                                <input id="f-email" type="email"
-                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">Celular /
-                                    WhatsApp</label>
-                                <input id="f-celular" type="text"
-                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- BLOCO PESSOA FÍSICA -->
-                    <section id="sessao-pf" class="hidden space-y-6">
-                        <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span class="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+                    <!-- BLOCO PESSOA FÍSICA (PRINT 1) -->
+                    <section id="sessao-pf" class="hidden space-y-8">
+                        <h3 class="text-xl font-black text-slate-900 flex items-center gap-3">
+                            <span class="w-1.5 h-8 bg-blue-600 rounded-full"></span>
                             Dados Pessoais
                         </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">RG</label>
-                                <input id="f-rg" type="text"
-                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">Data Nascimento</label>
-                                <input id="f-nascimento" type="date"
-                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">Estado Civil</label>
-                                <select id="f-civil"
-                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="solteiro">Solteiro</option>
-                                    <option value="casado">Casado</option>
-                                    <option value="uniao">União Estável</option>
-                                    <option value="divorciado">Divorciado</option>
-                                    <option value="viuvo">Viúvo</option>
-                                </select>
-                            </div>
-                        </div>
-                    </section>
 
-                    <!-- BLOCO PESSOA JURÍDICA -->
-                    <section id="sessao-pj" class="hidden space-y-6">
-                        <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span class="w-1.5 h-6 bg-blue-600 rounded-full"></span>
-                            Representantes da Empresa
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div class="md:col-span-3">
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Nome
+                                    Completo</label>
+                                <input id="f-nome" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-bold">
+                            </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">Sócio/Representante 1
-                                    (Nome)</label>
-                                <input id="f-rep1-nome" type="text"
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Data
+                                    de Nascimento</label>
+                                <input id="f-nascimento" type="date"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Sexo</label>
+                                <div class="flex gap-6 mt-2">
+                                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio"
+                                            name="sexo" value="M" class="w-4 h-4 text-blue-600"> <span
+                                            class="text-sm font-bold text-slate-700">Masculino</span></label>
+                                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio"
+                                            name="sexo" value="F" class="w-4 h-4 text-blue-600"> <span
+                                            class="text-sm font-bold text-slate-700">Feminino</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Identidade
+                                    (RG)</label>
+                                <input id="f-rg" type="text"
                                     class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">CPF Rep. 1</label>
-                                <input id="f-rep1-cpf" type="text"
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Órgão
+                                    Expedidor</label>
+                                <input id="f-orgao" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none uppercase">
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Filiação</label>
+                                <input id="f-filiacao" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none"
+                                    placeholder="Nome dos pais">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Naturalidade
+                                    / UF</label>
+                                <input id="f-naturalidade" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Nacionalidade</label>
+                                <input id="f-nacionalidade" type="text" value="Braileira"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+
+                            <div class="md:col-span-4">
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-4">Estado
+                                    Civil</label>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="estado_civil" value="Solteiro"> Solteiro</label>
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="estado_civil" value="Casado"> Casado</label>
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="estado_civil" value="União Estável"> União
+                                        Estável</label>
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="estado_civil" value="Divorciado"> Divorciado</label>
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="estado_civil" value="Viúvo"> Viúvo</label>
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="estado_civil" value="Separado Judicialmente"> Separado
+                                        Judicialmente</label>
+                                </div>
+                            </div>
+
+                            <div class="md:col-span-4">
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-4">Grau
+                                    de Instrução</label>
+                                <div class="flex flex-wrap gap-6">
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="instrucao" value="1º Grau"> 1º Grau</label>
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="instrucao" value="2º Grau"> 2º Grau</label>
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="instrucao" value="Superior"> Superior</label>
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="instrucao" value="Outros"> Outros</label>
+                                </div>
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">E-mail</label>
+                                <input id="f-email" type="email"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Telefone
+                                    Fixo</label>
+                                <input id="f-fixo" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Celular</label>
+                                <input id="f-celular" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+
+                            <div class="md:col-span-4 grid grid-cols-1 md:grid-cols-4 gap-6">
+                                <div class="md:col-span-2">
+                                    <label
+                                        class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Endereço
+                                        Residencial</label>
+                                    <input id="f-logradouro" type="text"
+                                        class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Bairro</label>
+                                    <input id="f-bairro" type="text"
+                                        class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Cidade
+                                        - UF</label>
+                                    <div class="flex gap-2">
+                                        <input id="f-cidade" type="text"
+                                            class="flex-1 p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                                        <input id="f-uf" type="text" maxlength="2"
+                                            class="w-16 p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none text-center uppercase">
+                                    </div>
+                                </div>
+                                <div class="md:col-span-1">
+                                    <label
+                                        class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">CEP</label>
+                                    <input id="f-cep" type="text"
+                                        class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                                </div>
+                            </div>
+
+                            <div class="md:col-span-4">
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-4">Tipo
+                                    de Residência</label>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="residencia" value="Própria"> Própria</label>
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="residencia" value="Financiada"> Financiada</label>
+                                    <div class="col-span-2 flex items-center gap-3">
+                                        <label
+                                            class="flex items-center gap-2 text-sm font-bold text-slate-700 shrink-0"><input
+                                                type="radio" name="residencia" value="Alugada"> Alugada - R$:</label>
+                                        <input id="f-res-aluguel" type="number" placeholder="Valor"
+                                            class="w-full p-2 bg-slate-50 border border-slate-100 rounded-lg outline-none text-xs">
+                                    </div>
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="residencia" value="Com os pais"> Com os pais</label>
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="residencia" value="Com parentes"> Com parentes</label>
+                                    <label class="flex items-center gap-2 text-sm font-bold text-slate-700"><input
+                                            type="radio" name="residencia" value="Outros"> Outros</label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Tempo
+                                    que reside</label>
+                                <input id="f-tempo-reside" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none"
+                                    placeholder="Ex: 2 anos">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Nº
+                                    de dependentes</label>
+                                <input id="f-dependentes" type="number" value="0"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- BLOCO CONJUGE (PRINT 2) - CONDICIONAL -->
+                    <section id="sessao-conjuge"
+                        class="hidden space-y-8 bg-pink-50/30 p-8 rounded-3xl border border-pink-100">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-black text-slate-900 flex items-center gap-3">
+                                <span class="w-1.5 h-8 bg-pink-500 rounded-full"></span>
+                                Dados do Cônjuge
+                            </h3>
+                            <span
+                                class="text-[10px] font-black uppercase tracking-widest text-pink-600 bg-pink-100 px-3 py-1 rounded-full">Automático
+                                por Estado Civil</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div class="md:col-span-3">
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Nome
+                                    Completo</label>
+                                <input id="f-c-nome" type="text"
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Data
+                                    de Nascimento</label>
+                                <input id="f-c-nascimento" type="date"
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Identidade
+                                    (RG)</label>
+                                <input id="f-c-rg" type="text"
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Órgão
+                                    Expedidor</label>
+                                <input id="f-c-orgao" type="text"
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none uppercase">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">CPF</label>
+                                <input id="f-c-cpf" type="text"
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Nacionalidade</label>
+                                <input id="f-c-nacionalidade" type="text"
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none">
+                            </div>
+
+                            <div class="md:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label
+                                        class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Profissão</label>
+                                    <input id="f-c-profissao" type="text"
+                                        class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label
+                                        class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Empresa
+                                        / Renda</label>
+                                    <div class="flex gap-2">
+                                        <input id="f-c-empresa" type="text" placeholder="Empresa onde trabalha"
+                                            class="flex-1 p-4 bg-white border border-slate-100 rounded-xl outline-none">
+                                        <input id="f-c-renda" type="number" placeholder="R$ Renda"
+                                            class="w-32 p-4 bg-white border border-slate-100 rounded-xl outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- BLOCO PESSOA JURÍDICA (ESTRUTURA ORIGINAL MELHORADA) -->
+                    <section id="sessao-pj" class="hidden space-y-8">
+                        <h3 class="text-xl font-black text-slate-900 flex items-center gap-3">
+                            <span class="w-1.5 h-8 bg-blue-600 rounded-full"></span>
+                            Dados da Empresa
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="md:col-span-2">
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Razão
+                                    Social</label>
+                                <input id="f-nome-pj" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Nome
+                                    Fantasia</label>
+                                <input id="f-fantasia" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Inscrição
+                                    Estadual</label>
+                                <input id="f-ie" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Data
+                                    Fundação</label>
+                                <input id="f-fundacao" type="date"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Faturamento
+                                    Mensal</label>
+                                <input id="f-faturamento" type="number"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- DADOS PROFISSIONAIS (PRINT 3) - PARA PF -->
+                    <section id="sessao-profissional" class="hidden space-y-8">
+                        <h3 class="text-xl font-black text-slate-900 flex items-center gap-3">
+                            <span class="w-1.5 h-8 bg-emerald-500 rounded-full"></span>
+                            Dados Profissionais
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Profissão</label>
+                                <input id="f-p-profissao" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Empresa
+                                    onde trabalha</label>
+                                <div class="flex gap-2">
+                                    <input id="f-p-empresa" type="text"
+                                        class="flex-1 p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                                    <input id="f-p-cnpj" type="text" placeholder="CNPJ"
+                                        class="w-48 p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                                </div>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Cargo
+                                    / Função</label>
+                                <input id="f-p-cargo" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Data
+                                    de Admissão</label>
+                                <input id="f-p-admissao" type="date"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Renda
+                                    Mensal</label>
+                                <input id="f-p-renda" type="number"
                                     class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
                             </div>
                         </div>
