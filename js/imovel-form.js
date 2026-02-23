@@ -31,16 +31,53 @@ const LISTA_CONDOMINIO = [
 ];
 
 /**
+ * Converte imagem para WebP no client-side com hardening.
+ */
+async function convertToWebP(file) {
+    if (file.type === 'image/webp') return file;
+    if (!file.type.startsWith('image/')) throw new Error('Arquivo inválido. Apenas imagens são permitidas.');
+
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                canvas.toBlob((blob) => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    canvas.width = canvas.height = 0;
+
+                    if (!blob) return reject(new Error('Erro ao converter imagem.'));
+
+                    const fileName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+                    resolve(new File([blob], fileName, { type: 'image/webp' }));
+                }, 'image/webp', 0.8);
+            };
+            img.onerror = reject;
+            img.src = event.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+/**
  * 4.1️⃣ FUNÇÃO DE UPLOAD
  */
 async function uploadFoto(file, imovelId, ordem, isCapa) {
-    const ext = file.name.split('.').pop();
+    const webpFile = await convertToWebP(file);
+    const ext = webpFile.name.split('.').pop();
     const filePath = `${imovelId}/${crypto.randomUUID()}.${ext}`;
 
     const { error: uploadError } = await supabase
         .storage
         .from('imoveis')
-        .upload(filePath, file);
+        .upload(filePath, webpFile, { upsert: false, contentType: 'image/webp' });
 
     if (uploadError) throw uploadError;
 
