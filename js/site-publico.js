@@ -4,13 +4,13 @@ import { resolveColorScheme, applyColorScheme } from './theme/engine.js';
 let siteConfig = null;
 let allImoveisCache = [];
 let allFotosCache = [];
-let currentFinalidade = 'Todos'; 
-let isDestaqueOnly = false; 
+let currentFinalidade = 'Todos';
+let isDestaqueOnly = false;
 let searchState = { intent: null, tokens: [] };
 let debounceTimer;
 
 const STOPWORDS = [
-    'a', 'o', 'e', 'ou', 'nem', 'de', 'da', 'do', 'em', 'para', 'com', 'um', 'uma', 'os', 'as', 'no', 'na', 
+    'a', 'o', 'e', 'ou', 'nem', 'de', 'da', 'do', 'em', 'para', 'com', 'um', 'uma', 'os', 'as', 'no', 'na',
     'por', 'dos', 'das', 'ao', 'aos', 'pelo', 'pela', 'num', 'numa', 'quero', 'busco', 'procurando', 'estou', 'interessado'
 ];
 
@@ -21,19 +21,19 @@ const INTENT_ALUGUEL = ['alugar', 'aluguel', 'locacao', 'locar', 'aluga', 'alugo
  * Função única para geração de links do WhatsApp com suporte a variáveis e fallbacks.
  */
 function buildWhatsAppLink({ numero, mensagem }, imovel = {}) {
-  if (!numero) return null;
+    if (!numero) return null;
 
-  const cleanNumber = numero.replace(/\D/g, '');
-  if (cleanNumber.length < 8) return null;
+    const cleanNumber = numero.replace(/\D/g, '');
+    if (cleanNumber.length < 8) return null;
 
-  const texto = (mensagem || '')
-    .replace(/{{titulo}}/g, imovel.titulo || '')
-    .replace(/{{referencia}}/g, imovel.referencia || imovel.id || '')
-    .replace(/{{bairro}}/g, imovel.bairro || '')
-    .replace(/{{cidade}}/g, imovel.cidade || '')
-    .replace(/{{valor}}/g, '');
+    const texto = (mensagem || '')
+        .replace(/{{titulo}}/g, imovel.titulo || '')
+        .replace(/{{referencia}}/g, imovel.referencia || imovel.id || '')
+        .replace(/{{bairro}}/g, imovel.bairro || '')
+        .replace(/{{cidade}}/g, imovel.cidade || '')
+        .replace(/{{valor}}/g, '');
 
-  return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(texto)}`;
+    return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(texto)}`;
 }
 
 /**
@@ -158,7 +158,7 @@ function applyFiltersLocally() {
 
     let filtered = allImoveisCache.filter(imovel => {
         const imovelFinalidade = (imovel.finalidade || '').toLowerCase();
-        
+
         // 1. Prioridade Semântica (Se o usuário quer comprar ou alugar)
         if (searchState.intent && imovelFinalidade !== searchState.intent) {
             return false;
@@ -184,14 +184,14 @@ function applyFiltersLocally() {
                 normalizeText(imovel.cidade),
                 normalizeText(imovel.referencia)
             ];
-            
+
             // Verifica se QUALQUER (OR) dos tokens existem em QUALQUER um dos campos
-            const hasMatch = searchState.tokens.some(token => 
+            const hasMatch = searchState.tokens.some(token =>
                 fieldsToSearch.some(field => field.includes(token))
             );
             if (!hasMatch) return false;
         }
-        
+
         return true;
     });
 
@@ -212,7 +212,7 @@ function applyFiltersLocally() {
     } else {
         container.innerHTML = renderCardList(filtered, allFotosCache) || `<div class="col-span-full py-20 text-center text-slate-400 font-medium bg-white rounded-[2.5rem] border border-dashed border-slate-200">Não encontramos imóveis nesta categoria no momento.</div>`;
     }
-    
+
     document.querySelectorAll('.card-imovel').forEach(card => {
         card.onclick = () => window.location.href = `imovel.html?id=${card.dataset.id}`;
     });
@@ -239,18 +239,18 @@ function setupLeadModal() {
     const content = document.getElementById('lead-modal-content');
     const closeBtn = document.getElementById('close-lead-modal');
     const form = document.getElementById('lead-capture-form');
-    
+
     if (!modal || !content || !form) return;
-    
+
     const alreadySent = localStorage.getItem('imobi_lead_sent');
     const alreadyShownThisSession = sessionStorage.getItem('lead_modal_shown');
-    
+
     if (alreadySent === 'true' || alreadyShownThisSession === 'true') return;
-    
+
     let opened = false;
-    
+
     const openModal = () => {
-        if (opened) return; 
+        if (opened) return;
         opened = true;
 
         // Limpa ouvintes para evitar disparos duplicados
@@ -277,7 +277,7 @@ function setupLeadModal() {
     document.addEventListener('scroll', openModal, { once: true });
 
     if (closeBtn) closeBtn.addEventListener('click', (e) => { e.preventDefault(); closeModal(); });
-    
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = form.querySelector('button[type="submit"]');
@@ -367,11 +367,11 @@ function setupFooterLeadForm() {
                 form.reset();
                 success.classList.add('hidden');
                 fields.classList.remove('hidden');
-                
+
                 // RESTAURAÇÃO DO BOTÃO PARA NOVO ENVIO
                 btn.disabled = false;
                 btn.innerText = "Enviar Mensagem";
-                
+
                 // Reset visual dos checkboxes
                 checkboxContainer.classList.remove('border-red-400', 'ring-2', 'ring-red-100');
                 checkboxError.classList.add('hidden');
@@ -392,10 +392,10 @@ function setupFooterLeadForm() {
  */
 function parseSearchQuery(text) {
     if (!text) return { intent: null, tokens: [] };
-    
+
     const normalized = normalizeText(text);
     const rawWords = normalized.split(/\s+/).filter(word => word.length > 1);
-    
+
     let intent = null;
     const tokens = [];
 
@@ -424,11 +424,35 @@ async function initSite() {
     setupLeadModal();
     setupFooterLeadForm();
     initFilterBadges();
+
+    // Fallback de segurança: Destrói a cortina branca após 3 segundos
+    // caso a network esteja muito lenta, para NUNCA travar o site em branco.
+    setTimeout(() => {
+        const boot = document.getElementById('boot-screen');
+        if (boot) {
+            document.body.classList.add('ready');
+            boot.remove();
+        }
+    }, 3000);
+
     try {
         const { data: config } = await supabase.from('configuracoes_site').select('*').limit(1).maybeSingle();
-        if (config) { siteConfig = config; applySiteSettings(config); }
-    } catch (err) { console.error('Config Error:', err); }
-    loadProperties(); 
+        if (config) {
+            siteConfig = config;
+            applySiteSettings(config);
+        }
+    } catch (err) {
+        console.error('Config Error:', err);
+    }
+
+    injectSearchIntoHero();
+    await loadProperties();
+
+    const boot = document.getElementById('boot-screen');
+    if (boot) {
+        document.body.classList.add('ready');
+        boot.remove();
+    }
 }
 
 function applySiteSettings(config) {
@@ -443,7 +467,7 @@ function applySiteSettings(config) {
     if (footerCreci) footerCreci.innerText = config.footer_creci || '';
     const footerPhone = document.getElementById('footer-phone-display');
     if (footerPhone) footerPhone.innerText = config.footer_telefone || config.header_whatsapp || '';
-    
+
     // RENDERIZAÇÃO DA LOGO NO HERO
     const heroLogoContainer = document.getElementById('hero-logo-container');
     const heroLogoImg = document.getElementById('hero-logo-img');
@@ -457,7 +481,7 @@ function applySiteSettings(config) {
     if (formTitle && config.titulo_formulario_footer && config.titulo_formulario_footer.trim() !== "") {
         formTitle.innerText = config.titulo_formulario_footer;
     }
-    
+
     const formSubtitle = document.getElementById('footer-form-subtitle');
     if (formSubtitle && config.subtitulo_formulario_footer && config.subtitulo_formulario_footer.trim() !== "") {
         formSubtitle.innerText = config.subtitulo_formulario_footer;
@@ -499,7 +523,7 @@ function applySiteSettings(config) {
     if (heroSub && config.hero_subtitulo) heroSub.innerText = config.hero_subtitulo;
     const footerCopy = document.getElementById('footer-copyright-text');
     if (footerCopy) { footerCopy.innerText = config.footer_copyright || config.rodape_texto || `© ${new Date().getFullYear()} ${config.header_nome_site || 'ImobiMaster'}`; }
-    
+
     // APLICAÇÃO DINÂMICA DO BOTÃO FLUTUANTE
     const waBtn = document.getElementById('whatsapp-floating-btn');
     if (waBtn) {
@@ -521,15 +545,15 @@ function applySiteSettings(config) {
 function injectSearchIntoHero() {
     const heroSearchContainer = document.querySelector('.hero-search-container');
     if (!heroSearchContainer || heroSearchContainer.querySelector('.js-search-form-injected')) return;
-    
+
     const form = document.createElement('form');
     form.className = 'js-search-form-injected flex flex-col md:flex-row gap-5 w-full mt-4 p-2 bg-white/5 backdrop-blur-md rounded-[2rem] border border-white/10 shadow-inner';
-    
+
     const input = document.createElement('input');
     input.type = 'search';
     input.placeholder = 'Ex: Comprar casa no Bessa ou alugar apto';
     input.className = 'w-full md:flex-1 px-8 py-6 rounded-3xl text-slate-900 bg-white border-none shadow-2xl outline-none transition-all font-bold text-lg placeholder:text-slate-400 placeholder:font-medium input-search-hero';
-    
+
     const button = document.createElement('button');
     button.type = 'submit';
     button.textContent = (siteConfig && siteConfig.hero_cta_texto) ? siteConfig.hero_cta_texto : 'Buscar';
@@ -555,10 +579,10 @@ function injectSearchIntoHero() {
 }
 
 const SOCIAL_ICONS_MAP = {
-  footer_instagram_url: `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
-  footer_tiktok_url: `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 448 512"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14z"/></svg>`,
-  footer_x_url: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-80.4 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>`,
-  footer_linkedin_url: `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>`
+    footer_instagram_url: `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
+    footer_tiktok_url: `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 448 512"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14z"/></svg>`,
+    footer_x_url: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-80.4 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>`,
+    footer_linkedin_url: `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>`
 };
 
 async function loadProperties() {
@@ -577,11 +601,3 @@ async function loadProperties() {
 }
 
 initSite();
-window.addEventListener('load', () => {
-  injectSearchIntoHero();
-  const boot = document.getElementById('boot-screen');
-  if (boot) {
-    document.body.classList.add('ready');
-    boot.remove();
-  }
-});
