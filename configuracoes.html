@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>Configurações do Site - ImobiMaster</title>
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="css/style.css">
     <script type="module" src="js/auth-guard.js"></script>
 </head>
+
 <body class="bg-slate-50 flex flex-col md:flex-row min-h-screen">
     <aside class="w-full md:w-64 bg-slate-900 md:min-h-screen text-white p-6 sticky top-0 z-50">
         <div class="flex items-center justify-between md:block">
@@ -15,8 +17,12 @@
                 <span class="bg-blue-600 p-1 rounded text-white font-serif text-sm">I</span>
                 Admin Panel
             </h2>
-            <button class="md:hidden text-slate-400" onclick="document.getElementById('mobile-nav-config').classList.toggle('hidden')">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            <button class="md:hidden text-slate-400"
+                onclick="document.getElementById('mobile-nav-config').classList.toggle('hidden')">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
             </button>
         </div>
         <nav id="mobile-nav-config" class="hidden md:block space-y-2 mt-6 md:mt-0">
@@ -24,7 +30,8 @@
             <a href="leads.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Leads</a>
             <a href="imoveis.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Imóveis</a>
             <a href="configuracoes.html" class="block p-3 bg-blue-600 rounded-lg">Configurações</a>
-            <button id="btn-logout" class="block w-full text-left p-3 text-red-400 hover:bg-red-950 rounded-lg mt-10">Sair</button>
+            <button id="btn-logout"
+                class="block w-full text-left p-3 text-red-400 hover:bg-red-950 rounded-lg mt-10">Sair</button>
         </nav>
     </aside>
 
@@ -38,32 +45,46 @@
             <!-- SEÇÃO 1: Cabeçalho e Identidade -->
             <section class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
                 <h3 class="text-lg font-bold mb-6 text-slate-800 flex items-center gap-2">
-                    <span class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-sm">1</span>
+                    <span
+                        class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-sm">1</span>
                     Cabeçalho e Identidade
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-semibold mb-2 text-slate-700">Nome da Imobiliária</label>
-                        <input id="c-site-name" type="text" placeholder="Ex: ImobiMaster" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                        <input id="c-site-name" type="text" placeholder="Ex: ImobiMaster"
+                            class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-2 text-slate-700">Esquema de cores</label>
-                        <select id="color_scheme_id" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                        <select id="color_scheme_id"
+                            class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-semibold mb-2 text-slate-700">Logo Header</label>
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="block text-sm font-semibold text-slate-700">Logo Header</label>
+                            <label
+                                class="flex items-center gap-2 cursor-pointer text-sm text-slate-600 font-bold hover:text-slate-900 transition-colors bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                                <input type="checkbox" id="c-ocultar-logo"
+                                    class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer">
+                                Ocultar Logo do Site Público
+                            </label>
+                        </div>
                         <div class="flex items-center gap-4">
-                            <div id="logo-preview-container" class="w-16 h-16 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
+                            <div id="logo-preview-container"
+                                class="w-16 h-16 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
                                 <img id="logo-preview-img" src="" class="hidden w-full h-full object-contain p-1">
                                 <span id="logo-placeholder" class="text-[10px] font-bold text-slate-300">LOGO</span>
                             </div>
                             <div class="flex-1">
                                 <input type="file" id="logo-image-input" accept="image/*" class="hidden">
-                                <button type="button" onclick="document.getElementById('logo-image-input').click()" class="bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-lg font-bold hover:bg-slate-50 transition-all text-sm shadow-sm">
+                                <button type="button" onclick="document.getElementById('logo-image-input').click()"
+                                    class="bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-lg font-bold hover:bg-slate-50 transition-all text-sm shadow-sm">
                                     Alterar Logo
                                 </button>
-                                <p class="mt-1 text-[10px] text-slate-400">Recomendado: PNG ou WebP com fundo transparente.</p>
+                                <p class="mt-1 text-[10px] text-slate-400">Recomendado: PNG ou WebP com fundo
+                                    transparente.</p>
                             </div>
                         </div>
                     </div>
@@ -73,64 +94,90 @@
             <!-- SEÇÃO NOVA: WhatsApp – Mensagens e Números -->
             <section class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
                 <h3 class="text-lg font-bold mb-6 text-slate-800 flex items-center gap-2">
-                    <span class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-sm">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.417-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.305 1.652zm6.599-3.835c1.405.836 2.755 1.28 4.301 1.281 5.177 0 9.389-4.213 9.391-9.391 0-2.512-.975-4.87-2.747-6.645s-4.131-2.744-6.641-2.745c-5.181 0-9.392 4.213-9.395 9.393 0 1.608.434 3.182 1.258 4.587l-.937 3.421 3.49-.916zm11.22-7.259c.302-.15.302-.501.05-.651-.251-.151-1.488-.732-1.714-.813-.226-.082-.389-.121-.55.121s-.622.772-.763.933c-.14.161-.282.181-.582.031s-1.266-.467-2.411-1.487c-.891-.793-1.492-1.773-1.667-2.074-.176-.301-.019-.464.131-.614.135-.135.301-.351.452-.527.151-.176.201-.292.301-.482.1-.191.05-.361-.026-.511-.076-.151-.55-1.328-.753-1.817-.197-.474-.4-.41-.55-.418s-.311-.008-.477-.008-.437.061-.664.311c-.226.251-.865.842-.865 2.05s.879 2.373 1.005 2.541c.125.168 1.733 2.646 4.197 3.711.586.254 1.044.405 1.401.518.589.187 1.125.161 1.549.098.473-.07 1.488-.607 1.701-1.192.214-.584.214-1.085.15-1.192-.063-.107-.226-.171-.528-.221z"/></svg>
+                    <span
+                        class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-sm">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.417-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.305 1.652zm6.599-3.835c1.405.836 2.755 1.28 4.301 1.281 5.177 0 9.389-4.213 9.391-9.391 0-2.512-.975-4.87-2.747-6.645s-4.131-2.744-6.641-2.745c-5.181 0-9.392 4.213-9.395 9.393 0 1.608.434 3.182 1.258 4.587l-.937 3.421 3.49-.916zm11.22-7.259c.302-.15.302-.501.05-.651-.251-.151-1.488-.732-1.714-.813-.226-.082-.389-.121-.55.121s-.622.772-.763.933c-.14.161-.282.181-.582.031s-1.266-.467-2.411-1.487c-.891-.793-1.492-1.773-1.667-2.074-.176-.301-.019-.464.131-.614.135-.135.301-.351.452-.527.151-.176.201-.292.301-.482.1-.191.05-.361-.026-.511-.076-.151-.55-1.328-.753-1.817-.197-.474-.4-.41-.55-.418s-.311-.008-.477-.008-.437.061-.664.311c-.226.251-.865.842-.865 2.05s.879 2.373 1.005 2.541c.125.168 1.733 2.646 4.197 3.711.586.254 1.044.405 1.401.518.589.187 1.125.161 1.549.098.473-.07 1.488-.607 1.701-1.192.214-.584.214-1.085.15-1.192-.063-.107-.226-.171-.528-.221z" />
+                        </svg>
                     </span>
                     WhatsApp – Mensagens e Números
                 </h3>
-                
+
                 <div class="space-y-10">
                     <!-- WhatsApp Header -->
                     <div class="p-6 bg-slate-50/50 rounded-2xl border border-slate-100">
-                        <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <h4
+                            class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                             <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                             📍 Botão WhatsApp do Header
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">Número WhatsApp Header</label>
-                                <input id="c-wa-header-num" type="text" placeholder="Ex: 5583999999999" class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Número WhatsApp
+                                    Header</label>
+                                <input id="c-wa-header-num" type="text" placeholder="Ex: 5583999999999"
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">Mensagem WhatsApp Header</label>
-                                <textarea id="c-wa-header-msg" rows="2" placeholder="Ex: Olá! Vim pelo seu site e gostaria de mais informações." class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Mensagem WhatsApp
+                                    Header</label>
+                                <textarea id="c-wa-header-msg" rows="2"
+                                    placeholder="Ex: Olá! Vim pelo seu site e gostaria de mais informações."
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
                             </div>
                         </div>
                     </div>
 
                     <!-- WhatsApp Floating -->
                     <div class="p-6 bg-slate-50/50 rounded-2xl border border-slate-100">
-                        <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <h4
+                            class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                             <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
                             📍 Botão WhatsApp Flutuante
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">Número WhatsApp Botão Flutuante</label>
-                                <input id="c-wa-floating-num" type="text" placeholder="Ex: 5583999999999" class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Número WhatsApp Botão
+                                    Flutuante</label>
+                                <input id="c-wa-floating-num" type="text" placeholder="Ex: 5583999999999"
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">Mensagem WhatsApp Botão Flutuante</label>
-                                <textarea id="c-wa-floating-msg" rows="2" placeholder="Ex: Olá! Quero falar com um corretor agora." class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Mensagem WhatsApp Botão
+                                    Flutuante</label>
+                                <textarea id="c-wa-floating-msg" rows="2"
+                                    placeholder="Ex: Olá! Quero falar com um corretor agora."
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
                             </div>
                         </div>
                     </div>
 
                     <!-- WhatsApp Imovel -->
                     <div class="p-6 bg-slate-50/50 rounded-2xl border border-slate-100">
-                        <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <h4
+                            class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                             <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
                             📍 Botão WhatsApp da Página do Imóvel
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">Número WhatsApp Página do Imóvel</label>
-                                <input id="c-wa-imovel-num" type="text" placeholder="Ex: 5583999999999" class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Número WhatsApp Página do
+                                    Imóvel</label>
+                                <input id="c-wa-imovel-num" type="text" placeholder="Ex: 5583999999999"
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-2 text-slate-700">Mensagem WhatsApp Página do Imóvel</label>
-                                <textarea id="c-wa-imovel-msg" rows="2" placeholder="Ex: Olá! Vi o imóvel {{titulo}} - {{referencia}} na sua vitrine digital e gostaria de agendar uma visita." class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
-                                <p class="mt-2 text-[10px] text-slate-400 font-medium">Use <span class="text-blue-600">{{titulo}}</span>, <span class="text-blue-600">{{referencia}}</span>, <span class="text-blue-600">{{bairro}}</span> ou <span class="text-blue-600">{{cidade}}</span> para dados dinâmicos.</p>
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Mensagem WhatsApp Página
+                                    do Imóvel</label>
+                                <textarea id="c-wa-imovel-msg" rows="2"
+                                    placeholder="Ex: Olá! Vi o imóvel {{titulo}} - {{referencia}} na sua vitrine digital e gostaria de agendar uma visita."
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
+                                <p class="mt-2 text-[10px] text-slate-400 font-medium">Use <span
+                                        class="text-blue-600">{{titulo}}</span>, <span
+                                        class="text-blue-600">{{referencia}}</span>, <span
+                                        class="text-blue-600">{{bairro}}</span> ou <span
+                                        class="text-blue-600">{{cidade}}</span> para dados dinâmicos.</p>
                             </div>
                         </div>
                     </div>
@@ -140,35 +187,48 @@
             <!-- SEÇÃO 2: Hero / Destaque Principal -->
             <section class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
                 <h3 class="text-lg font-bold mb-6 text-slate-800 flex items-center gap-2">
-                    <span class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-sm">3</span>
+                    <span
+                        class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-sm">3</span>
                     Hero / Destaque Principal
                 </h3>
                 <div class="grid grid-cols-1 gap-6">
                     <div>
                         <label class="block text-sm font-semibold mb-2 text-slate-700">Título Principal</label>
-                        <input id="c-hero-title" type="text" placeholder="Ex: Seu imóvel do jeito certo" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                        <input id="c-hero-title" type="text" placeholder="Ex: Seu imóvel do jeito certo"
+                            class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-2 text-slate-700">Subtítulo</label>
-                        <textarea id="c-hero-subtitle" rows="3" placeholder="Ex: Encontre o imóvel ideal para você" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed"></textarea>
+                        <textarea id="c-hero-subtitle" rows="3" placeholder="Ex: Encontre o imóvel ideal para você"
+                            class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed"></textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-4 text-slate-700">Imagem de Fundo (Hero)</label>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                            <div id="hero-preview-container" class="relative group h-48 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center">
+                            <div id="hero-preview-container"
+                                class="relative group h-48 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center">
                                 <img id="hero-preview-img" src="" class="hidden w-full h-full object-cover">
                                 <div id="hero-preview-placeholder" class="text-slate-400 text-center p-4">
-                                    <svg class="w-10 h-10 mx-auto mb-2 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <svg class="w-10 h-10 mx-auto mb-2 opacity-20" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
                                     <p class="text-xs font-bold uppercase tracking-widest">Sem imagem definida</p>
                                 </div>
                             </div>
                             <div class="space-y-4">
                                 <input type="file" id="hero-image-input" accept="image/*" class="hidden">
-                                <button type="button" onclick="document.getElementById('hero-image-input').click()" class="w-full bg-white border border-slate-200 text-slate-700 px-6 py-4 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                <button type="button" onclick="document.getElementById('hero-image-input').click()"
+                                    class="w-full bg-white border border-slate-200 text-slate-700 px-6 py-4 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                    </svg>
                                     Alterar Imagem
                                 </button>
-                                <p class="text-[10px] text-slate-400 font-medium leading-relaxed">Formatos: JPG, PNG ou WebP. Recomendado: 1920x1080px.</p>
+                                <p class="text-[10px] text-slate-400 font-medium leading-relaxed">Formatos: JPG, PNG ou
+                                    WebP. Recomendado: 1920x1080px.</p>
                             </div>
                         </div>
                     </div>
@@ -178,64 +238,80 @@
             <!-- SEÇÃO 3: Footer do Site -->
             <section class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
                 <h3 class="text-lg font-bold mb-6 text-slate-800 flex items-center gap-2">
-                    <span class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-sm">4</span>
+                    <span
+                        class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-sm">4</span>
                     Footer do Site
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-semibold mb-2 text-slate-700">Título do Footer</label>
-                        <input id="footer_titulo" type="text" placeholder="Ex: Marlon Sales." class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                        <input id="footer_titulo" type="text" placeholder="Ex: Marlon Sales."
+                            class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-2 text-slate-700">Telefone para Exibição</label>
-                        <input id="footer_telefone" type="text" placeholder="Ex: (83) 99999-9999" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                        <input id="footer_telefone" type="text" placeholder="Ex: (83) 99999-9999"
+                            class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-sm font-semibold mb-2 text-slate-700">Bio / Descrição Curta</label>
-                        <textarea id="footer_bio" rows="3" placeholder="Especialistas em encontrar o lar dos seus sonhos..." class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed"></textarea>
+                        <textarea id="footer_bio" rows="3"
+                            placeholder="Especialistas em encontrar o lar dos seus sonhos..."
+                            class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed"></textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-2 text-slate-700">Título Formulário Footer</label>
-                        <input id="titulo_formulario_footer" type="text" placeholder="Ex: Não encontrou seu imóvel?" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                        <input id="titulo_formulario_footer" type="text" placeholder="Ex: Não encontrou seu imóvel?"
+                            class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2 text-slate-700">Subtítulo Formulário Footer</label>
-                        <input id="subtitulo_formulario_footer" type="text" placeholder="Ex: Deixe-nos uma mensagem." class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                        <label class="block text-sm font-semibold mb-2 text-slate-700">Subtítulo Formulário
+                            Footer</label>
+                        <input id="subtitulo_formulario_footer" type="text" placeholder="Ex: Deixe-nos uma mensagem."
+                            class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-sm font-semibold mb-2 text-slate-700">Texto do CRECI</label>
-                        <input id="footer_creci" type="text" placeholder="Ex: MARLON SALES – CRECI: 1111" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                        <input id="footer_creci" type="text" placeholder="Ex: MARLON SALES – CRECI: 1111"
+                            class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
                 <div class="mt-8 pt-8 border-t border-slate-50">
-                    <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Redes Sociais (Links completos)</h4>
+                    <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Redes Sociais (Links
+                        completos)</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-semibold mb-2 text-slate-700">Instagram URL</label>
-                            <input id="footer_instagram_url" type="url" placeholder="https://instagram.com/..." class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            <input id="footer_instagram_url" type="url" placeholder="https://instagram.com/..."
+                                class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold mb-2 text-slate-700">TikTok URL</label>
-                            <input id="footer_tiktok_url" type="url" placeholder="https://tiktok.com/@..." class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            <input id="footer_tiktok_url" type="url" placeholder="https://tiktok.com/@..."
+                                class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold mb-2 text-slate-700">X (Twitter) URL</label>
-                            <input id="footer_x_url" type="url" placeholder="https://x.com/..." class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            <input id="footer_x_url" type="url" placeholder="https://x.com/..."
+                                class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold mb-2 text-slate-700">LinkedIn URL</label>
-                            <input id="footer_linkedin_url" type="url" placeholder="https://linkedin.com/in/..." class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            <input id="footer_linkedin_url" type="url" placeholder="https://linkedin.com/in/..."
+                                class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
                 </div>
                 <div class="mt-8 pt-8 border-t border-slate-50">
                     <label class="block text-sm font-semibold mb-2 text-slate-700">Texto de Copyright (Final)</label>
-                    <input id="footer_copyright" type="text" placeholder="Ex: © 2024 ImobiMaster" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                    <input id="footer_copyright" type="text" placeholder="Ex: © 2024 ImobiMaster"
+                        class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             </section>
 
             <div class="flex justify-end pt-4 pb-12">
-                <button type="submit" id="btn-save-config" class="w-full md:w-auto bg-blue-600 text-white px-12 py-5 rounded-2xl font-bold hover:bg-blue-700 shadow-xl shadow-blue-200 transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
+                <button type="submit" id="btn-save-config"
+                    class="w-full md:w-auto bg-blue-600 text-white px-12 py-5 rounded-2xl font-bold hover:bg-blue-700 shadow-xl shadow-blue-200 transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
                     <span id="btn-text">Salvar Alterações</span>
                 </button>
             </div>
@@ -245,4 +321,5 @@
     <script type="module" src="js/auth.js"></script>
     <script type="module" src="js/configuracoes.js"></script>
 </body>
+
 </html>

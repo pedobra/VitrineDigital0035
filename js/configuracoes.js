@@ -32,14 +32,14 @@ async function convertToWebP(file) {
         canvas.height = img.height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
-        
+
         canvas.toBlob((blob) => {
           // Limpeza de memória do Canvas
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           canvas.width = canvas.height = 0;
 
           if (!blob) return reject(new Error('Erro ao converter imagem.'));
-          
+
           const fileName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
           resolve(new File([blob], fileName, { type: 'image/webp' }));
         }, 'image/webp', 0.8);
@@ -72,7 +72,7 @@ function initColorSchemeSelect() {
   const select = document.getElementById('color_scheme_id');
   if (!select) return;
 
-  select.innerHTML = COLOR_SCHEMES.map(s => 
+  select.innerHTML = COLOR_SCHEMES.map(s =>
     `<option value="${s.id}">${s.label}</option>`
   ).join('');
 
@@ -86,45 +86,45 @@ function initColorSchemeSelect() {
 }
 
 function setupUploads() {
-    // Hero
-    const heroInput = document.getElementById('hero-image-input');
-    const heroPreviewImg = document.getElementById('hero-preview-img');
-    const heroPlaceholder = document.getElementById('hero-preview-placeholder');
+  // Hero
+  const heroInput = document.getElementById('hero-image-input');
+  const heroPreviewImg = document.getElementById('hero-preview-img');
+  const heroPlaceholder = document.getElementById('hero-preview-placeholder');
 
-    if (heroInput) {
-        heroInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            pendingHeroImage = file;
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                heroPreviewImg.src = event.target.result;
-                heroPreviewImg.classList.remove('hidden');
-                heroPlaceholder.classList.add('hidden');
-            };
-            reader.readAsDataURL(file);
-        });
-    }
+  if (heroInput) {
+    heroInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      pendingHeroImage = file;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        heroPreviewImg.src = event.target.result;
+        heroPreviewImg.classList.remove('hidden');
+        heroPlaceholder.classList.add('hidden');
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 
-    // Logo
-    const logoInput = document.getElementById('logo-image-input');
-    const logoPreviewImg = document.getElementById('logo-preview-img');
-    const logoPlaceholder = document.getElementById('logo-placeholder');
+  // Logo
+  const logoInput = document.getElementById('logo-image-input');
+  const logoPreviewImg = document.getElementById('logo-preview-img');
+  const logoPlaceholder = document.getElementById('logo-placeholder');
 
-    if (logoInput) {
-        logoInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            pendingLogoImage = file;
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                logoPreviewImg.src = event.target.result;
-                logoPreviewImg.classList.remove('hidden');
-                logoPlaceholder.classList.add('hidden');
-            };
-            reader.readAsDataURL(file);
-        });
-    }
+  if (logoInput) {
+    logoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      pendingLogoImage = file;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        logoPreviewImg.src = event.target.result;
+        logoPreviewImg.classList.remove('hidden');
+        logoPlaceholder.classList.add('hidden');
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 }
 
 async function loadConfig() {
@@ -144,11 +144,14 @@ async function loadConfig() {
       configuracaoId = data.id;
 
       document.getElementById('c-site-name').value = data.header_nome_site || '';
-      
+
       if (data.color_scheme) {
         document.getElementById('color_scheme_id').value = data.color_scheme;
         applyColorScheme(resolveColorScheme(data.color_scheme));
       }
+
+      const checkOcultarLogo = document.getElementById('c-ocultar-logo');
+      if (checkOcultarLogo) checkOcultarLogo.checked = data.ocultar_logo || false;
 
       // WhatsApp Configuration Mapping
       document.getElementById('c-wa-header-num').value = data.whatsapp_header || '';
@@ -163,24 +166,24 @@ async function loadConfig() {
       document.getElementById('c-hero-subtitle').value = data.hero_subtitulo || '';
 
       if (data.hero_bg_desktop_url) {
-          const previewImg = document.getElementById('hero-preview-img');
-          const placeholder = document.getElementById('hero-preview-placeholder');
-          if (previewImg) {
-              previewImg.src = data.hero_bg_desktop_url;
-              previewImg.classList.remove('hidden');
-              placeholder.classList.add('hidden');
-          }
+        const previewImg = document.getElementById('hero-preview-img');
+        const placeholder = document.getElementById('hero-preview-placeholder');
+        if (previewImg) {
+          previewImg.src = data.hero_bg_desktop_url;
+          previewImg.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+        }
       }
 
       // Logo Preview
       if (data.logo_header) {
-          const previewImg = document.getElementById('logo-preview-img');
-          const placeholder = document.getElementById('logo-placeholder');
-          if (previewImg) {
-              previewImg.src = data.logo_header;
-              previewImg.classList.remove('hidden');
-              placeholder.classList.add('hidden');
-          }
+        const previewImg = document.getElementById('logo-preview-img');
+        const placeholder = document.getElementById('logo-placeholder');
+        if (previewImg) {
+          previewImg.src = data.logo_header;
+          previewImg.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+        }
       }
 
       // Footer
@@ -211,10 +214,13 @@ document.getElementById('config-form').onsubmit = async (e) => {
   btnText.innerText = 'Salvando...';
 
   try {
+    const checkOcultarLogo = document.getElementById('c-ocultar-logo');
+
     const payload = {
       header_nome_site: document.getElementById('c-site-name').value,
       color_scheme: document.getElementById('color_scheme_id').value,
-      
+      ocultar_logo: checkOcultarLogo ? checkOcultarLogo.checked : false,
+
       whatsapp_header: document.getElementById('c-wa-header-num').value || null,
       whatsapp_msg_header: document.getElementById('c-wa-header-msg').value || null,
       whatsapp_floating: document.getElementById('c-wa-floating-num').value || null,
@@ -224,7 +230,7 @@ document.getElementById('config-form').onsubmit = async (e) => {
 
       hero_titulo: document.getElementById('c-hero-title').value,
       hero_subtitulo: document.getElementById('c-hero-subtitle').value,
-      
+
       footer_titulo: document.getElementById('footer_titulo').value || null,
       footer_bio: document.getElementById('footer_bio').value || null,
       footer_creci: document.getElementById('footer_creci').value || null,
@@ -236,32 +242,32 @@ document.getElementById('config-form').onsubmit = async (e) => {
       footer_x_url: document.getElementById('footer_x_url').value || null,
       footer_linkedin_url: document.getElementById('footer_linkedin_url').value || null,
       footer_copyright: document.getElementById('footer_copyright').value || null,
-      
+
       updated_at: new Date().toISOString()
     };
 
     // Upload Logo Header
     if (pendingLogoImage) {
-        const webpFile = await convertToWebP(pendingLogoImage);
-        const baseUuid = crypto.randomUUID();
-        const webpPath = `assets/logo_${baseUuid}.webp`;
-        await supabase.storage.from('imoveis').upload(webpPath, webpFile, { upsert: false, contentType: 'image/webp' });
-        const { data: urlData } = supabase.storage.from('imoveis').getPublicUrl(webpPath);
-        payload.logo_header = urlData.publicUrl;
+      const webpFile = await convertToWebP(pendingLogoImage);
+      const baseUuid = crypto.randomUUID();
+      const webpPath = `assets/logo_${baseUuid}.webp`;
+      await supabase.storage.from('imoveis').upload(webpPath, webpFile, { upsert: false, contentType: 'image/webp' });
+      const { data: urlData } = supabase.storage.from('imoveis').getPublicUrl(webpPath);
+      payload.logo_header = urlData.publicUrl;
     }
 
     // Upload Hero
     if (pendingHeroImage) {
-        const webpFile = await convertToWebP(pendingHeroImage);
-        const baseUuid = crypto.randomUUID();
-        const originalPath = `assets/hero_raw_${baseUuid}.${pendingHeroImage.name.split('.').pop()}`;
-        const webpPath = `assets/hero_${baseUuid}.webp`;
+      const webpFile = await convertToWebP(pendingHeroImage);
+      const baseUuid = crypto.randomUUID();
+      const originalPath = `assets/hero_raw_${baseUuid}.${pendingHeroImage.name.split('.').pop()}`;
+      const webpPath = `assets/hero_${baseUuid}.webp`;
 
-        await supabase.storage.from('imoveis').upload(originalPath, pendingHeroImage, { upsert: false, contentType: pendingHeroImage.type });
-        await supabase.storage.from('imoveis').upload(webpPath, webpFile, { upsert: false, contentType: 'image/webp' });
+      await supabase.storage.from('imoveis').upload(originalPath, pendingHeroImage, { upsert: false, contentType: pendingHeroImage.type });
+      await supabase.storage.from('imoveis').upload(webpPath, webpFile, { upsert: false, contentType: 'image/webp' });
 
-        const { data: urlData } = supabase.storage.from('imoveis').getPublicUrl(webpPath);
-        payload.hero_bg_desktop_url = urlData.publicUrl;
+      const { data: urlData } = supabase.storage.from('imoveis').getPublicUrl(webpPath);
+      payload.hero_bg_desktop_url = urlData.publicUrl;
     }
 
     const { error } = await supabase
@@ -270,7 +276,7 @@ document.getElementById('config-form').onsubmit = async (e) => {
       .eq('id', configuracaoId);
 
     if (error) throw error;
-    
+
     pendingHeroImage = null;
     pendingLogoImage = null;
     alert('Configurações salvas com sucesso!');

@@ -551,9 +551,16 @@ function applySiteSettings(config) {
     // RENDERIZAÇÃO DA LOGO NO HERO
     const heroLogoContainer = document.getElementById('hero-logo-container');
     const heroLogoImg = document.getElementById('hero-logo-img');
-    if (heroLogoContainer && heroLogoImg && config.logo_header) {
-        heroLogoImg.src = config.logo_header;
-        heroLogoContainer.classList.remove('hidden');
+
+    if (heroLogoContainer) {
+        if (config.ocultar_logo) {
+            heroLogoContainer.classList.add('hidden');
+        } else if (heroLogoImg && config.logo_header) {
+            heroLogoImg.src = config.logo_header;
+            heroLogoContainer.classList.remove('hidden');
+        } else {
+            heroLogoContainer.classList.add('hidden');
+        }
     }
 
     // RENDERIZAÇÃO DINÂMICA DO FORMULÁRIO DO FOOTER COM VERIFICAÇÃO DEFENSIVA
