@@ -199,7 +199,7 @@ function renderCardList(imoveis, fotos) {
         const foto = (fotos || []).find(f => f.imovel_id === imovel.id);
         const imagem = foto ? foto.url : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600';
         const preco = imovel.ocultar_preco
-            ? '<span class="bg-blue-600 text-white px-3 py-1 text-sm font-black uppercase tracking-widest rounded-lg shadow-sm">Sob Consulta</span>'
+            ? '<span class="bg-blue-600 text-white px-5 py-2 text-base font-black uppercase tracking-widest rounded-xl shadow-md inline-block">Sob Consulta</span>'
             : formatarBRL(obterValorImovel(imovel));
         const finalidade = imovel.finalidade || 'Venda';
         const referencia = imovel.referencia || `#${imovel.id.toString().slice(-4)}`;
@@ -222,18 +222,18 @@ function renderCardList(imoveis, fotos) {
                     ${imovel.destaque ? '<div class="absolute bottom-5 left-5 bg-amber-400 text-slate-900 font-black text-[10px] px-4 py-2 rounded-full shadow-lg z-10 tracking-widest uppercase animate-pulse">Destaque</div>' : ''}
                 </div>
                 <div class="p-8 flex flex-col flex-grow">
-                    <div class="mb-5">
-                        <div class="flex items-center gap-2 mb-2">
-                             <span class="inline-flex bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border border-blue-100/50">${imovel.cidade}/${imovel.uf || 'PB'}</span>
-                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest truncate">${imovel.bairro || ''}</span>
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-3 px-1">
+                             <span class="inline-flex bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border border-blue-100/50">${imovel.cidade}/${imovel.uf || 'PB'}</span>
+                             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest truncate max-w-[50%] text-right">${imovel.bairro || ''}</span>
                         </div>
-                        <h3 class="text-xl font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2 h-14">${imovel.titulo}</h3>
+                        <h3 class="text-xl font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2 min-h-[3.5rem]">${imovel.titulo}</h3>
                     </div>
-                    <div class="grid grid-cols-2 gap-y-4 gap-x-2 border-t border-slate-100 pt-6 pb-6 text-slate-600 text-[11px] font-bold uppercase tracking-tight">${specs.join('')}</div>
-                    <div class="border-t border-slate-100 py-6 mt-auto flex flex-col gap-5">
-                        <div>
-                            <p class="text-[11px] font-black text-blue-600/60 uppercase tracking-[0.2em] mb-1">${finalidade}</p>
-                            <p class="text-3xl font-black text-blue-600 tracking-tighter">${preco}</p>
+                    <div class="grid grid-cols-2 gap-y-4 gap-x-2 border-t border-slate-100 pt-5 pb-5 text-slate-600 text-xs text-center font-bold uppercase tracking-tight">${specs.join('')}</div>
+                    <div class="border-t border-slate-100 pt-5 pb-2 mt-auto flex flex-col gap-5">
+                        <div class="flex flex-col items-center justify-center text-center">
+                            <p class="text-xs font-black text-blue-600/60 uppercase tracking-[0.2em] mb-2">${finalidade}</p>
+                            <p class="text-3xl font-black text-blue-600 tracking-tighter w-full">${preco}</p>
                         </div>
                         <div class="pt-2">
                              <span class="inline-flex items-center justify-center w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-100/50">Ver detalhes</span>
