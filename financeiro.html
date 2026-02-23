@@ -4,11 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <title>Gerenciar Imóveis - ImobiRecife</title>
+    <title>Financeiro - ImobiRecife</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Script crítico para evitar FOUC -->
     <script>
         (function () {
             try {
@@ -43,8 +42,8 @@
         <nav id="mobile-nav" class="hidden md:block space-y-2 mt-6 md:mt-0">
             <a href="dashboard.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Visão Geral</a>
             <a href="leads.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Leads</a>
-            <a href="imoveis.html" class="block p-3 bg-blue-600 rounded-lg">Imóveis</a>
-            <a href="financeiro.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Financeiro</a>
+            <a href="imoveis.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Imóveis</a>
+            <a href="financeiro.html" class="block p-3 bg-blue-600 rounded-lg">Financeiro</a>
             <a href="configuracoes.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Configurações</a>
             <button id="btn-logout"
                 class="block w-full text-left p-3 text-red-400 hover:bg-red-950 rounded-lg mt-10">Sair</button>
@@ -54,11 +53,10 @@
     <main class="flex-1 p-6 md:p-10">
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
             <div>
-                <h1 class="text-3xl font-bold text-slate-900">Gestão de Imóveis</h1>
-                <p class="text-slate-500 text-sm">Visualize e controle seu catálogo de propriedades.</p>
+                <h1 class="text-3xl font-bold text-slate-900">Financeiro</h1>
+                <p class="text-slate-500 text-sm">Controle de propriedades vendidas e comissões.</p>
             </div>
             <div class="flex items-center gap-4 w-full md:w-auto">
-                <!-- View Toggle Group (Mobile Only) -->
                 <div class="md:hidden bg-slate-100 rounded-xl p-1 flex items-center shrink-0">
                     <button id="btn-view-table" class="p-3 bg-white rounded-lg shadow-sm text-blue-600 transition-all"
                         title="Ver em Tabela">
@@ -73,30 +71,21 @@
                         </svg>
                     </button>
                 </div>
-
-                <a href="imovel-form.html"
-                    class="flex-1 md:flex-none bg-blue-600 text-white px-6 py-4 md:py-3 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 active:scale-95 flex items-center justify-center gap-2">
-                    <span>+ Novo Imóvel</span>
-                </a>
             </div>
         </header>
 
-        <!-- Smart Search (Mobile Only) -->
-        <div class="md:hidden mb-6">
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
-                <input type="text" id="mobile-search-imoveis"
-                    class="w-full bg-white border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block pl-11 p-4 shadow-sm transition-all"
-                    placeholder="Buscar imóvel (Cidade, título, ref...)">
+        <!-- Container Resumo -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Total de Vendas</p>
+                <h2 id="total-vendas" class="text-4xl font-black text-slate-900">R$ 0,00</h2>
+            </div>
+            <div class="bg-blue-600 p-6 rounded-2xl shadow-sm border border-blue-500 text-white">
+                <p class="text-sm font-bold text-blue-200 uppercase tracking-widest mb-2">Total de Comissões</p>
+                <h2 id="total-comissoes" class="text-4xl font-black text-white">R$ 0,00</h2>
             </div>
         </div>
 
-        <!-- Table Container (Always visible on desktop, toggleable on mobile) -->
         <div id="view-table-container"
             class="block md:block bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden responsive-table">
             <div class="overflow-x-auto">
@@ -105,30 +94,28 @@
                         <tr>
                             <th class="p-5 text-xs font-bold text-slate-400 uppercase tracking-widest">Cód.</th>
                             <th class="p-5 text-xs font-bold text-slate-400 uppercase tracking-widest">Imóvel</th>
-                            <th class="p-5 text-xs font-bold text-slate-400 uppercase tracking-widest">Valor</th>
-                            <th class="p-5 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">
-                                Status</th>
-                            <th class="p-5 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Ações
-                            </th>
+                            <th class="p-5 text-xs font-bold text-slate-400 uppercase tracking-widest">Valor Venda</th>
+                            <th class="p-5 text-xs font-bold text-slate-400 uppercase tracking-widest">Comissão (%)</th>
+                            <th class="p-5 text-xs font-bold text-blue-600 uppercase tracking-widest text-right">
+                                Comissão (R$)</th>
                         </tr>
                     </thead>
-                    <tbody id="properties-table-body">
+                    <tbody id="finance-table-body">
                         <tr>
-                            <td colspan="5" class="p-20 text-center text-slate-400">Carregando catálogo...</td>
+                            <td colspan="5" class="p-20 text-center text-slate-400">Carregando dados...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Cards Container (Hidden on desktop, toggleable on mobile) -->
         <div id="view-cards-container" class="hidden md:hidden grid-cols-1 gap-4">
-            <div class="p-10 text-center text-slate-400">Carregando catálogo...</div>
+            <div class="p-10 text-center text-slate-400">Carregando dados...</div>
         </div>
     </main>
 
     <script type="module" src="js/auth.js"></script>
-    <script type="module" src="js/imoveis.js"></script>
+    <script type="module" src="js/financeiro.js"></script>
 </body>
 
 </html>

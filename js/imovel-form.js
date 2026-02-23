@@ -179,6 +179,19 @@ async function init() {
     } else {
         generateImovelCode();
     }
+
+    // Toggle Comissão visibility based on Finalidade
+    const finalidadeSelect = document.getElementById('f-finalidade');
+    const wrapperComissao = document.getElementById('wrapper-comissao');
+    const toggleComissao = () => {
+        if (finalidadeSelect.value === 'Venda') {
+            wrapperComissao.style.display = 'block';
+        } else {
+            wrapperComissao.style.display = 'none';
+        }
+    };
+    finalidadeSelect.addEventListener('change', toggleComissao);
+    toggleComissao();
 }
 
 async function loadPropertyData(id) {
@@ -200,6 +213,11 @@ async function loadPropertyData(id) {
         } else {
             document.getElementById('f-finalidade').value = p.valor_locacao > 0 ? 'Aluguel' : 'Venda';
         }
+
+        // Dispara evento manualmente para atualizar a exibição de comissão
+        document.getElementById('f-finalidade').dispatchEvent(new Event('change'));
+
+        document.getElementById('f-comissao').value = p.comissao || '';
 
         document.getElementById('f-rooms').value = p.dormitorios || 0;
         document.getElementById('f-suites').value = p.suites || 0;
@@ -345,6 +363,7 @@ document.getElementById('property-form').onsubmit = async (e) => {
             uf: uf,
             caracteristicas_imovel: caracteristicasImovel,
             caracteristicas_condominio: caracteristicasCondominio,
+            comissao: finalidade === 'Venda' ? Number(document.getElementById('f-comissao').value || 0) : null,
             // ETAPA 4 — PAYLOAD SUPABASE
             opcoes_pagamento: opcoesPagamento,
             garantias_locacao: garantiasLocacao

@@ -52,6 +52,7 @@
             <a href="dashboard.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Visão Geral</a>
             <a href="leads.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Leads</a>
             <a href="imoveis.html" class="block p-3 bg-blue-600 rounded-lg">Imóveis</a>
+            <a href="financeiro.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Financeiro</a>
             <a href="configuracoes.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Configurações</a>
             <button id="btn-logout"
                 class="block w-full text-left p-3 text-red-400 hover:bg-red-950 rounded-lg mt-10">Sair</button>
@@ -77,7 +78,7 @@
                         class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-sm">1</span>
                     Identificação e Status
                 </h3>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
                     <div>
                         <label class="block text-sm font-semibold mb-2 text-slate-700">Ref. Interna</label>
                         <input id="f-referencia" type="text" placeholder="Ex: CS-001"
@@ -94,6 +95,7 @@
                             class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
                             <option value="ativo">Ativo</option>
                             <option value="inativo">Inativo</option>
+                            <option value="Vendido">Vendido</option>
                         </select>
                     </div>
                     <div>
@@ -103,6 +105,11 @@
                             <option value="Venda">Venda</option>
                             <option value="Aluguel">Aluguel</option>
                         </select>
+                    </div>
+                    <div id="wrapper-comissao">
+                        <label class="block text-sm font-semibold mb-2 text-slate-700">Comissão (%)</label>
+                        <input id="f-comissao" type="number" step="0.01" min="0" placeholder="Ex: 5"
+                            class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
             </section>

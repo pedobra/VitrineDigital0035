@@ -58,13 +58,24 @@ function renderProperties(properties) {
     tableBody.innerHTML = properties.map(p => {
         const preco = p.valor_venda || p.valor_locacao || 0;
         const priceFormatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(preco);
-        const statusClass = p.ativo ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500';
-        const statusLabel = p.ativo ? (p.status_imovel || 'Ativo') : 'Inativo';
+
+        const isVendido = p.status_imovel === 'Vendido';
+
+        let statusClass = p.ativo ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500';
+        let statusLabel = p.ativo ? (p.status_imovel || 'Ativo') : 'Inativo';
+        let rowClass = `border-b border-slate-50 hover:bg-slate-50/50 transition-colors group ${p.destaque ? 'bg-amber-50/20' : ''}`;
+
+        if (isVendido) {
+            statusClass = 'bg-green-500 text-white border-green-600 shadow-sm';
+            statusLabel = 'Vendido';
+            rowClass = `border-b border-green-100 bg-green-50/30 hover:bg-green-50/80 transition-colors group`;
+        }
+
         const featuredBadge = p.destaque ? `<span class="ml-2 inline-flex items-center gap-1 bg-amber-100 text-amber-700 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter">⭐ Destaque</span>` : '';
         const refText = p.referencia || `#${p.id.toString().slice(-4)}`;
 
         return `
-            <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group ${p.destaque ? 'bg-amber-50/20' : ''}">
+            <tr class="${rowClass}">
                 <td class="p-5 text-sm font-mono text-slate-400">${refText}</td>
                 <td class="p-5">
                     <div class="flex items-center">
@@ -74,7 +85,7 @@ function renderProperties(properties) {
                 </td>
                 <td class="p-5 text-sm font-semibold text-slate-700">${priceFormatted}</td>
                 <td class="p-5 text-center">
-                    <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${statusClass}">
+                    <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-transparent ${statusClass}">
                         ${statusLabel}
                     </span>
                 </td>
@@ -99,8 +110,19 @@ function renderProperties(properties) {
     mobileCards.innerHTML = properties.map(p => {
         const preco = p.valor_venda || p.valor_locacao || 0;
         const priceFormatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(preco);
-        const statusClass = p.ativo ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500';
-        const statusLabel = p.ativo ? (p.status_imovel || 'Ativo') : 'Inativo';
+
+        const isVendido = p.status_imovel === 'Vendido';
+
+        let statusClass = p.ativo ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500';
+        let statusLabel = p.ativo ? (p.status_imovel || 'Ativo') : 'Inativo';
+        let cardClass = `bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col group ${p.destaque ? 'ring-2 ring-amber-100' : ''}`;
+
+        if (isVendido) {
+            statusClass = 'bg-green-500 text-white border-green-600 shadow-sm';
+            statusLabel = 'Vendido';
+            cardClass = `bg-green-50/50 rounded-2xl shadow-lg border-2 border-green-200 overflow-hidden flex flex-col group ${p.destaque ? 'ring-amber-200' : ''}`;
+        }
+
         const featuredBadge = p.destaque ? `<span class="inline-flex items-center gap-1 bg-amber-100 text-amber-700 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter shadow-sm">⭐ Destaque</span>` : '';
         const refText = p.referencia || `#${p.id.toString().slice(-4)}`;
 
@@ -117,7 +139,7 @@ function renderProperties(properties) {
         }
 
         return `
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col group ${p.destaque ? 'ring-2 ring-amber-100' : ''}">
+            <div class="${cardClass}">
                 <div class="h-48 w-full bg-slate-100 relative">
                     <img src="${firstImg}" class="w-full h-full object-cover object-center" alt="${p.titulo}">
                     <div class="absolute top-3 left-3">
