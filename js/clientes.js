@@ -598,19 +598,19 @@ window.viewCliente = async (id) => {
 
     let html = '';
     const row = (label, value) => `
-        <div class="flex flex-col gap-1">
-            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">${label}</span>
-            <span class="text-sm font-bold text-slate-900 border-b border-slate-50 pb-1 min-h-[1.5rem]">${value || '--'}</span>
+        <div class="flex flex-col gap-0.5">
+            <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">${label}</span>
+            <span class="text-xs font-bold text-slate-900 border-b border-slate-50 pb-0.5 min-h-[1.2rem] leading-tight">${value || '--'}</span>
         </div>
     `;
 
     const section = (title, content, colorClass = 'blue') => `
-        <div class="rounded-3xl border-2 border-slate-100 p-8 space-y-6 break-inside-avoid shadow-sm mb-6">
-            <h3 class="text-xs font-black text-${colorClass}-600 uppercase tracking-widest flex items-center gap-2">
-                <span class="w-1.5 h-4 bg-${colorClass}-600 rounded-full"></span>
+        <div class="rounded-2xl border-2 border-slate-100 p-5 md:p-6 space-y-4 break-inside-avoid shadow-sm mb-4">
+            <h3 class="text-[10px] font-black text-${colorClass}-600 uppercase tracking-widest flex items-center gap-2">
+                <span class="w-1 h-3 bg-${colorClass}-600 rounded-full"></span>
                 ${title}
             </h3>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3">
                 ${content}
             </div>
         </div>
