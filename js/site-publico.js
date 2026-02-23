@@ -551,7 +551,7 @@ function injectSearchIntoHero() {
 
     const input = document.createElement('input');
     input.type = 'search';
-    input.placeholder = 'Ex: Comprar casa no Bessa ou alugar apto';
+    input.placeholder = 'Buscar por cidade, bairro ou código de referência...';
     input.className = 'w-full md:flex-1 px-8 py-6 rounded-3xl text-slate-900 bg-white border-none shadow-2xl outline-none transition-all font-bold text-lg placeholder:text-slate-400 placeholder:font-medium input-search-hero';
 
     const button = document.createElement('button');
