@@ -160,6 +160,8 @@ async function loadConfig() {
       document.getElementById('c-wa-floating-msg').value = data.whatsapp_msg_floating || '';
       document.getElementById('c-wa-imovel-num').value = data.whatsapp_imovel || '';
       document.getElementById('c-wa-imovel-msg').value = data.whatsapp_msg_imovel || '';
+      document.getElementById('c-wa-header-btn-text').value = data.whatsapp_btn_text_header || '';
+      document.getElementById('c-wa-imovel-btn-text').value = data.whatsapp_btn_text_imovel || '';
 
       // Hero
       document.getElementById('c-hero-title').value = data.hero_titulo || '';
@@ -191,6 +193,7 @@ async function loadConfig() {
       document.getElementById('footer_bio').value = data.footer_bio || '';
       document.getElementById('footer_creci').value = data.footer_creci || '';
       document.getElementById('footer_telefone').value = data.footer_telefone || '';
+      document.getElementById('footer_email').value = data.footer_email || '';
       document.getElementById('titulo_formulario_footer').value = data.titulo_formulario_footer || '';
       document.getElementById('subtitulo_formulario_footer').value = data.subtitulo_formulario_footer || '';
       document.getElementById('footer_instagram_url').value = data.footer_instagram_url || '';
@@ -230,6 +233,8 @@ document.getElementById('config-form').onsubmit = async (e) => {
       whatsapp_msg_floating: document.getElementById('c-wa-floating-msg').value || null,
       whatsapp_imovel: document.getElementById('c-wa-imovel-num').value || null,
       whatsapp_msg_imovel: document.getElementById('c-wa-imovel-msg').value || null,
+      whatsapp_btn_text_header: document.getElementById('c-wa-header-btn-text').value || null,
+      whatsapp_btn_text_imovel: document.getElementById('c-wa-imovel-btn-text').value || null,
 
       hero_titulo: document.getElementById('c-hero-title').value,
       hero_subtitulo: document.getElementById('c-hero-subtitle').value,
@@ -238,6 +243,7 @@ document.getElementById('config-form').onsubmit = async (e) => {
       footer_bio: document.getElementById('footer_bio').value || null,
       footer_creci: document.getElementById('footer_creci').value || null,
       footer_telefone: document.getElementById('footer_telefone').value || null,
+      footer_email: document.getElementById('footer_email').value || null,
       titulo_formulario_footer: document.getElementById('titulo_formulario_footer').value || null,
       subtitulo_formulario_footer: document.getElementById('subtitulo_formulario_footer').value || null,
       footer_instagram_url: document.getElementById('footer_instagram_url').value || null,

@@ -718,12 +718,29 @@ function applySiteSettings(config) {
     if (headerCta) {
         const waNum = config.whatsapp_header;
         const waMsg = config.whatsapp_msg_header || "Olá! Vim pelo seu site e gostaria de mais informações.";
+
+        // Aplicação do Novo Texto Dinâmico
+        if (config.whatsapp_btn_text_header && config.whatsapp_btn_text_header.trim() !== '') {
+            headerCta.innerText = config.whatsapp_btn_text_header;
+        }
+
         const link = buildWhatsAppLink({ numero: waNum, mensagem: waMsg });
         if (link) {
             headerCta.classList.remove('hidden');
             headerCta.href = link;
         } else {
             headerCta.classList.add('hidden');
+        }
+    }
+
+    // APLICAÇÃO DINÂMICA DO E-MAIL DO FOOTER
+    const footerEmailDisplay = document.getElementById('footer-email-display');
+    if (footerEmailDisplay) {
+        if (config.footer_email && config.footer_email.trim() !== '') {
+            footerEmailDisplay.innerHTML = `<a href="mailto:${config.footer_email}" class="hover:text-blue-600 transition-colors">${config.footer_email}</a>`;
+            footerEmailDisplay.classList.remove('hidden');
+        } else {
+            footerEmailDisplay.classList.add('hidden');
         }
     }
 

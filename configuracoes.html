@@ -140,7 +140,12 @@
                                     Header</label>
                                 <textarea id="c-wa-header-msg" rows="2"
                                     placeholder="Ex: Olá! Vim pelo seu site e gostaria de mais informações."
-                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm mb-4"></textarea>
+
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Texto do Botão no Topo do
+                                    Site</label>
+                                <input id="c-wa-header-btn-text" type="text" placeholder="Ex: Falar no WhatsApp"
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                         </div>
                     </div>
@@ -189,11 +194,16 @@
                                 <textarea id="c-wa-imovel-msg" rows="2"
                                     placeholder="Ex: Olá! Vi o imóvel {{titulo}} - {{referencia}} na sua vitrine digital e gostaria de agendar uma visita."
                                     class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
-                                <p class="mt-2 text-[10px] text-slate-400 font-medium">Use <span
+                                <p class="mt-2 text-[10px] text-slate-400 font-medium mb-4">Use <span
                                         class="text-blue-600">{{titulo}}</span>, <span
                                         class="text-blue-600">{{referencia}}</span>, <span
                                         class="text-blue-600">{{bairro}}</span> ou <span
                                         class="text-blue-600">{{cidade}}</span> para dados dinâmicos.</p>
+
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Texto do Botão na Página
+                                    do Imóvel</label>
+                                <input id="c-wa-imovel-btn-text" type="text" placeholder="Ex: Tenho interesse"
+                                    class="w-full p-4 bg-white border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                         </div>
                     </div>
@@ -267,6 +277,11 @@
                     <div>
                         <label class="block text-sm font-semibold mb-2 text-slate-700">Telefone para Exibição</label>
                         <input id="footer_telefone" type="text" placeholder="Ex: (83) 99999-9999"
+                            class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold mb-2 text-slate-700">E-mail para Contato</label>
+                        <input id="footer_email" type="email" placeholder="Ex: contato@empresa.com.br"
                             class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div class="md:col-span-2">

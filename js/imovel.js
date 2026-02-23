@@ -251,6 +251,9 @@ function renderizarImovel(p, config) {
     const waNum = config.whatsapp_imovel || config.whatsapp_header;
     const waMsg = config.whatsapp_msg_imovel || "Olá! Vi o imóvel {{titulo}} - {{referencia}} e gostaria de agendar uma visita.";
     const whatsappLink = buildWhatsAppLink({ numero: waNum, mensagem: waMsg }, p);
+    const ctaText = (config.whatsapp_btn_text_imovel && config.whatsapp_btn_text_imovel.trim() !== '')
+        ? config.whatsapp_btn_text_imovel
+        : 'Agendar visita agora';
 
     const caracImovel = ensureArray(p.caracteristicas_imovel);
     const caracCondo = ensureArray(p.caracteristicas_condominio);
@@ -403,7 +406,7 @@ function renderizarImovel(p, config) {
 
                         <div class="space-y-4">
                             <a href="${whatsappLink || '#'}" target="_blank" class="flex items-center justify-center w-full bg-blue-600 text-white py-6 rounded-xl font-black text-lg hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 active:scale-95 uppercase tracking-tight ${!whatsappLink ? 'pointer-events-none opacity-50' : ''}">
-                                Agendar visita agora
+                                ${ctaText}
                             </a>
                         </div>
                     </div>
