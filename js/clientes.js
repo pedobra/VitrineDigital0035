@@ -6,6 +6,8 @@ let editingId = null;
 document.addEventListener('DOMContentLoaded', () => {
     loadClientes();
     setupMasks();
+    setupFilters();
+    setupBulkActions();
 });
 
 // Mascaramento Automático CPF/CNPJ
@@ -116,6 +118,48 @@ function addRepresentanteField(data = {}) {
 
 document.getElementById('btn-add-representante').onclick = () => addRepresentanteField();
 
+function setupFilters() {
+    const search = document.getElementById('search-input');
+    const type = document.getElementById('filter-type');
+    const date = document.getElementById('filter-date');
+
+    const triggerFilter = () => renderClientes();
+
+    search.addEventListener('input', triggerFilter);
+    type.addEventListener('change', triggerFilter);
+    date.addEventListener('change', triggerFilter);
+}
+
+function setupBulkActions() {
+    const selectAll = document.getElementById('select-all');
+    selectAll.addEventListener('change', (e) => {
+        const checks = document.querySelectorAll('.client-check');
+        checks.forEach(c => c.checked = e.target.checked);
+        toggleBulkActions();
+    });
+
+    document.getElementById('btn-delete-multiple').onclick = async () => {
+        const selected = Array.from(document.querySelectorAll('.client-check:checked')).map(c => c.value);
+        if (selected.length === 0) return;
+
+        if (confirm(`Excluir ${selected.length} clientes selecionados?`)) {
+            try {
+                const { error } = await supabase.from('clientes').delete().in('id', selected);
+                if (error) throw error;
+                loadClientes();
+            } catch (e) {
+                alert('Erro ao excluir: ' + e.message);
+            }
+        }
+    };
+}
+
+function toggleBulkActions() {
+    const selected = document.querySelectorAll('.client-check:checked').length;
+    const bar = document.getElementById('bulk-actions');
+    bar.classList.toggle('hidden', selected === 0);
+}
+
 function liberarCampos(tipo) {
     const detalhados = document.getElementById('campos-detalhados');
     const sessaoPF = document.getElementById('sessao-pf');
@@ -160,25 +204,66 @@ function renderClientes() {
     const body = document.getElementById('lista-clientes-body');
     if (!body) return;
 
-    body.innerHTML = clientes.map(c => `
-        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition">
-            <td class="px-6 py-4 font-mono text-xs text-blue-600 font-bold">${c.documento}</td>
-            <td class="px-6 py-4">
-                <div class="text-sm font-bold text-slate-900">${c.nome_razao_social}</div>
-                <div class="text-xs text-slate-400 font-medium">${c.email || ''}</div>
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    const typeFilter = document.getElementById('filter-type').value;
+    const dateFilter = document.getElementById('filter-date').value;
+
+    const filtered = clientes.filter(c => {
+        const matchesSearch = !searchTerm ||
+            c.nome_razao_social?.toLowerCase().includes(searchTerm) ||
+            c.documento?.includes(searchTerm) ||
+            c.email?.toLowerCase().includes(searchTerm);
+
+        const matchesType = !typeFilter || c.tipo_pessoa === typeFilter;
+
+        const matchesDate = !dateFilter || (c.created_at && c.created_at.startsWith(dateFilter));
+
+        return matchesSearch && matchesType && matchesDate;
+    });
+
+    body.innerHTML = filtered.map(c => `
+        <tr class="group hover:bg-blue-50/30 transition-all cursor-pointer border-b border-slate-50">
+            <td class="px-6 py-4" onclick="event.stopPropagation()">
+                <input type="checkbox" value="${c.id}" class="client-check w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" onchange="toggleBulkActions()">
             </td>
-            <td class="px-6 py-4">
-                <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${c.tipo_pessoa === 'PF' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}">
-                    ${c.tipo_pessoa === 'PF' ? 'Pessoa Física' : 'Pessoa Jurídica'}
+            <td class="px-6 py-4 font-mono text-xs text-blue-600 font-bold" onclick="editCliente('${c.id}')">${c.documento}</td>
+            <td class="px-6 py-4" onclick="editCliente('${c.id}')">
+                <div class="text-sm font-black text-slate-900 group-hover:text-blue-700 transition-colors uppercase">${c.nome_razao_social}</div>
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">${c.email || ''}</div>
+            </td>
+            <td class="px-6 py-4" onclick="editCliente('${c.id}')">
+                <span class="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${c.tipo_pessoa === 'PF' ? 'bg-amber-50 text-amber-600 border border-amber-100' : 'bg-indigo-50 text-indigo-600 border border-indigo-100'}">
+                    ${c.tipo_pessoa === 'PF' ? 'PF' : 'PJ'}
                 </span>
             </td>
-            <td class="px-6 py-4 text-sm text-slate-600 font-medium">${c.telefone_celular || '--'}</td>
-            <td class="px-6 py-4 text-right">
-                <button onclick="editCliente('${c.id}')" class="text-blue-600 hover:text-blue-800 font-bold text-xs uppercase p-2">Editar</button>
+            <td class="px-6 py-4 text-xs text-slate-500 font-bold hidden md:table-cell" onclick="editCliente('${c.id}')">${c.telefone_celular || '--'}</td>
+            <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">
+                <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onclick="editCliente('${c.id}')" class="p-2.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Editar">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                    </button>
+                    <button onclick="deleteCliente('${c.id}')" class="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all" title="Excluir">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </div>
             </td>
         </tr>
     `).join('');
 }
+
+window.deleteCliente = async (id) => {
+    if (confirm('Deseja realmente excluir este cliente?')) {
+        try {
+            const { error } = await supabase.from('clientes').delete().eq('id', id);
+            if (error) throw error;
+            loadClientes();
+        } catch (e) {
+            alert('Erro ao excluir: ' + e.message);
+        }
+    }
+};
+
+window.toggleBulkActions = toggleBulkActions;
 
 // Modal Toggle
 document.getElementById('btn-novo-cliente').onclick = () => {

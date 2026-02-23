@@ -37,39 +37,78 @@
     </aside>
 
     <main class="flex-1 p-6 md:p-10">
-        <header class="flex justify-between items-center mb-10">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
             <div>
-                <h1 class="text-3xl font-bold text-slate-900">Gestão de Clientes</h1>
-                <p class="text-slate-500 text-sm">Registro de Pessoas Físicas e Jurídicas.</p>
+                <h1 class="text-3xl font-black text-slate-900">Gestão de Clientes</h1>
+                <p class="text-slate-500 text-sm font-medium">Registro de Pessoas Físicas e Jurídicas.</p>
             </div>
             <button id="btn-novo-cliente"
-                class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700 transition">
-                <span>+ Novo Cliente</span>
+                class="w-full md:w-auto bg-blue-600 text-white px-8 py-4 rounded-2xl font-black flex items-center justify-center gap-3 hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 active:scale-95">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span class="uppercase tracking-widest text-xs">Novo Cliente</span>
             </button>
         </header>
 
+        <!-- Filtros e Busca -->
+        <section class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="md:col-span-2 relative">
+                <input type="text" id="search-input" placeholder="Buscar por nome, documento ou e-mail..."
+                    class="w-full pl-12 pr-4 py-4 bg-white border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-50/50 focus:border-blue-200 transition-all font-medium text-slate-600">
+                <svg class="w-5 h-5 text-slate-300 absolute left-4 top-1/2 -translate-y-1/2" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <div>
+                <select id="filter-type"
+                    class="w-full p-4 bg-white border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-50/50 font-medium text-slate-600 appearance-none">
+                    <option value="">Todos os Tipos</option>
+                    <option value="PF">Pessoa Física (PF)</option>
+                    <option value="PJ">Pessoa Jurídica (PJ)</option>
+                </select>
+            </div>
+            <div>
+                <input type="date" id="filter-date"
+                    class="w-full p-4 bg-white border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-50/50 font-medium text-slate-600">
+            </div>
+        </section>
+
         <!-- Lista de Clientes -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-                <h3 class="font-bold text-slate-700">Todos os Clientes</h3>
+        <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-50 flex items-center justify-between bg-white">
+                <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs">Base de Clientes</h3>
+                <div id="bulk-actions" class="hidden flex items-center gap-2 animate-in fade-in slide-in-from-right-4">
+                    <button id="btn-delete-multiple"
+                        class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-100 transition">Excluir
+                        Selecionados</button>
+                </div>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-black tracking-widest">
+                <table class="w-full text-left border-collapse">
+                    <thead
+                        class="bg-slate-50/50 text-slate-400 uppercase text-[10px] font-black tracking-widest border-b border-slate-50">
                         <tr>
-                            <th class="px-6 py-4">Documento</th>
-                            <th class="px-6 py-4">Nome / Razão Social</th>
-                            <th class="px-6 py-4">Tipo</th>
-                            <th class="px-6 py-4">Contato</th>
-                            <th class="px-6 py-4 text-right">Ações</th>
+                            <th class="px-6 py-5 w-10">
+                                <input type="checkbox" id="select-all"
+                                    class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                            </th>
+                            <th class="px-6 py-5">Documento</th>
+                            <th class="px-6 py-5">Cliente</th>
+                            <th class="px-6 py-5">Tipo</th>
+                            <th class="px-6 py-5 hidden md:table-cell">Contato</th>
+                            <th class="px-6 py-5 text-right font-black">Ações</th>
                         </tr>
                     </thead>
-                    <tbody id="lista-clientes-body">
+                    <tbody id="lista-clientes-body" class="divide-y divide-slate-50">
                         <!-- Carregado via JS -->
                     </tbody>
                 </table>
             </div>
         </div>
+
     </main>
 
     <!-- Modal Form -->
