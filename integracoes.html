@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <title>Integrações - Vitrine Digital</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="js/auth-guard.js"></script>
+    <script>
+        (function () {
+            try {
+                const theme = localStorage.getItem('imobimaster_theme_tokens');
+                if (theme) {
+                    const tokens = JSON.parse(theme);
+                    const root = document.documentElement;
+                    Object.entries(tokens).forEach(([key, value]) => {
+                        root.style.setProperty(key, value);
+                    });
+                }
+            } catch (e) { }
+        })();
+    </script>
+</head>
+
+<body class="bg-slate-50 flex flex-col md:flex-row min-h-screen">
+    <aside class="w-full md:w-64 bg-slate-900 md:min-h-screen text-white p-6 sticky top-0 z-50">
+        <div class="flex items-center justify-between md:block">
+            <h2 class="text-xl font-bold md:mb-10 flex items-center gap-2">
+                Painel Administrativo
+            </h2>
+            <button class="md:hidden text-slate-400"
+                onclick="document.getElementById('mobile-nav-integracoes').classList.toggle('hidden')">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <nav id="mobile-nav-integracoes" class="hidden md:block space-y-2 mt-6 md:mt-0">
+            <a href="dashboard.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Visão Geral</a>
+            <a href="leads.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Leads</a>
+            <a href="imoveis.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Imóveis</a>
+            <a href="clientes.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Clientes</a>
+            <a href="financeiro.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Financeiro</a>
+            <a href="integracoes.html" class="block p-3 bg-blue-600 rounded-lg">Integrações</a>
+            <a href="configuracoes.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Configurações</a>
+            <button id="btn-logout"
+                class="block w-full text-left p-3 text-red-400 hover:bg-red-950 rounded-lg mt-10">Sair</button>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-6 md:p-10 max-w-5xl mx-auto w-full">
+        <header class="mb-10 flex justify-between items-end">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900">Integrações de Marketing</h1>
+                <p class="text-slate-500">Configure seus pixels de rastreio (Meta Ads, TikTok, etc).</p>
+            </div>
+            <button onclick="openModal()"
+                class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Nova Integração
+            </button>
+        </header>
+
+        <div id="loading" class="text-center py-20 text-slate-400">
+            <div class="animate-spin w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4">
+            </div>
+            Carregando integrações...
+        </div>
+
+        <div id="integracoes-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+            <!-- JS fills this -->
+        </div>
+
+        <div id="empty-state"
+            class="hidden text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
+            <div class="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
+                    </path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900">Nenhuma integração configurada</h3>
+            <p class="text-slate-500 mt-1">Adicione seu primeiro Pixel para começar a rastrear conversões.</p>
+        </div>
+    </main>
+
+    <!-- Modal Form -->
+    <div id="modal-integracao"
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[60] hidden flex items-center justify-center p-4">
+        <div
+            class="bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="p-8 border-b border-slate-50 flex justify-between items-center">
+                <h2 id="modal-title" class="text-xl font-bold text-slate-900">Nova Integração</h2>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><svg class="w-6 h-6"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg></button>
+            </div>
+
+            <form id="form-integracao" class="p-8 space-y-6">
+                <input type="hidden" id="pixel-id-internal">
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tipo de Integração</label>
+                    <select id="tipo" required
+                        class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-xl focus:border-blue-500 outline-none transition">
+                        <option value="meta">Meta Ads (Facebook Pixel)</option>
+                        <option value="tiktok">TikTok Pixel</option>
+                        <option value="google_tag">Google Tag (GTM/GA4)</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nome Amigável</label>
+                    <input type="text" id="nome" placeholder="Ex: Pixel de Lançamento"
+                        class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-xl focus:border-blue-500 outline-none transition">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">ID do Pixel</label>
+                        <input type="text" id="pixel_id" required placeholder="ID do Rastreio"
+                            class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-xl focus:border-blue-500 outline-none transition">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Status</label>
+                        <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border-2 border-slate-100">
+                            <input type="checkbox" id="ativo" checked
+                                class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500">
+                            <span class="text-sm font-bold text-slate-600">Ativo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Access Token / Script
+                        Adicional (Opcional)</label>
+                    <textarea id="access_token" rows="3"
+                        placeholder="Insira o Token da API de Conversões ou código extra..."
+                        class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-xl focus:border-blue-500 outline-none transition font-mono text-xs"></textarea>
+                    <p class="text-[10px] text-slate-400">Necessário para API de Conversões (Server-side).</p>
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white p-5 rounded-2xl font-bold uppercase tracking-widest hover:bg-blue-700 transition shadow-lg shadow-blue-100">
+                    Salvar Integração
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/integracoes.js"></script>
+
+    <script>
+        window.openModal = function () {
+            document.getElementById('modal-title').innerText = 'Nova Integração';
+            document.getElementById('form-integracao').reset();
+            document.getElementById('pixel-id-internal').value = '';
+            document.getElementById('modal-integracao').classList.remove('hidden');
+        }
+        window.closeModal = function () {
+            document.getElementById('modal-integracao').classList.add('hidden');
+        }
+    </script>
+</body>
+
+</html>

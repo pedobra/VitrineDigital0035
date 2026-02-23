@@ -623,12 +623,85 @@ function parseSearchQuery(text) {
     return { intent, tokens };
 }
 
+async function loadMarketingPixels() {
+    try {
+        const { data: pixels, error } = await supabase
+            .from('integracoes_pixels')
+            .select('*')
+            .eq('ativo', true);
+
+        if (error || !pixels) return;
+
+        pixels.forEach(p => {
+            if (p.tipo === 'meta') injectMetaPixel(p.pixel_id);
+            if (p.tipo === 'tiktok') injectTikTokPixel(p.pixel_id);
+            if (p.tipo === 'outros' && p.access_token) injectCustomScript(p.access_token);
+        });
+    } catch (err) {
+        console.error('Erro ao carregar pixels:', err);
+    }
+}
+
+function injectMetaPixel(id) {
+    if (!id) return;
+    const script = document.createElement('script');
+    script.innerHTML = `
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '${id}');
+        fbq('track', 'PageView');
+    `;
+    document.head.appendChild(script);
+
+    const noscript = document.createElement('noscript');
+    noscript.innerHTML = `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${id}&ev=PageView&noscript=1" />`;
+    document.head.appendChild(noscript);
+}
+
+function injectTikTokPixel(id) {
+    if (!id) return;
+    const script = document.createElement('script');
+    script.innerHTML = `
+        !function (w, d, t) {
+            w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","detach","update","setGlobalConfig","getGlobalConfig","getVideoMetrics","getPlugin","setCookie","getCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+            ttq.load('${id}');
+            ttq.page();
+        }(window, document, 'ttq');
+    `;
+    document.head.appendChild(script);
+}
+
+function injectCustomScript(code) {
+    if (!code) return;
+    if (code.includes('<script')) {
+        const div = document.createElement('div');
+        div.innerHTML = code;
+        Array.from(div.querySelectorAll('script')).forEach(oldScript => {
+            const newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+            document.head.appendChild(newScript);
+        });
+    } else {
+        const script = document.createElement('script');
+        script.innerHTML = code;
+        document.head.appendChild(script);
+    }
+}
+
 async function initSite() {
     setupEasterEgg();
     initTheme();
     setupLeadModal();
     setupFooterLeadForm();
     initFilterBadges();
+    await loadMarketingPixels();
 
     // Fallback de segurança: Destrói a cortina branca após 3 segundos
     // caso a network esteja muito lenta, para NUNCA travar o site em branco.
