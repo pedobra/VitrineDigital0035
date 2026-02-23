@@ -3,6 +3,9 @@ import { supabase } from './supabase.js';
 /**
  * Carrega todos os dados necessários para o dashboard administrativo
  */
+/**
+ * Carrega todos os dados necessários para o dashboard administrativo
+ */
 async function loadDashboardData() {
     try {
         // 1. Identificar usuário autenticado para exibição
@@ -13,7 +16,6 @@ async function loadDashboardData() {
         }
 
         // 2. Buscar Contagens de Imóveis (Ativos vs Inativos)
-        // Usamos count: 'exact' e head: true para obter apenas o número de registros, economizando banda.
         const { count: activeCount } = await supabase
             .from('imoveis')
             .select('*', { count: 'exact', head: true })
@@ -29,16 +31,11 @@ async function loadDashboardData() {
             .from('leads')
             .select('*', { count: 'exact', head: true });
 
-        // 4. Buscar Contagens por Origem (Página e WhatsApp)
-        const { count: paginaLeads } = await supabase
-            .from('leads')
+        // 4. Buscar Total de Imóveis Vendidos
+        const { count: soldCount } = await supabase
+            .from('imoveis')
             .select('*', { count: 'exact', head: true })
-            .eq('origem', 'pagina');
-
-        const { count: whatsappLeads } = await supabase
-            .from('leads')
-            .select('*', { count: 'exact', head: true })
-            .eq('origem', 'whatsapp');
+            .eq('status_imovel', 'Vendido');
 
         // 5. Buscar os 5 Leads mais recentes para a lista de atividades
         const { data: recentLeads, error: recentError } = await supabase
@@ -49,18 +46,97 @@ async function loadDashboardData() {
 
         if (recentError) throw recentError;
 
-        // 6. Atualizar Elementos da Interface (Métricas)
+        // 6. Dados para Gráficos de Evolução (Últimos 7 dias)
+        const last7Days = [];
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            last7Days.push(date.toISOString().split('T')[0]);
+        }
+
+        // Busca leads dos últimos 7 dias
+        const sevenDaysAgo = last7Days[0];
+        const { data: leadsEvolution } = await supabase
+            .from('leads')
+            .select('created_at')
+            .gte('created_at', sevenDaysAgo);
+
+        // Busca imóveis vendidos (considerando updated_at como data da venda)
+        const { data: salesEvolution } = await supabase
+            .from('imoveis')
+            .select('updated_at')
+            .eq('status_imovel', 'Vendido')
+            .gte('updated_at', sevenDaysAgo);
+
+        // 7. Atualizar Elementos da Interface (Métricas)
         updateElementText('stat-active', activeCount || 0);
         updateElementText('stat-inactive', inactiveCount || 0);
         updateElementText('stat-leads', totalLeads || 0);
-        updateElementText('stat-origins', `${paginaLeads || 0} / ${whatsappLeads || 0}`);
+        updateElementText('stat-sold', soldCount || 0);
 
-        // 7. Renderizar a lista de leads recentes
+        // 8. Renderizar a lista de leads recentes
         renderRecentLeads(recentLeads || []);
+
+        // 9. Renderizar Gráficos
+        renderEvolutionCharts(last7Days, leadsEvolution || [], salesEvolution || []);
 
     } catch (err) {
         console.error('Erro ao carregar dados do dashboard:', err.message);
     }
+}
+
+/**
+ * Renderiza os gráficos de evolução usando Chart.js
+ */
+function renderEvolutionCharts(days, leadsData, salesData) {
+    const leadsCountByDay = days.map(day =>
+        leadsData.filter(l => l.created_at.startsWith(day)).length
+    );
+
+    const salesCountByDay = days.map(day =>
+        salesData.filter(s => s.updated_at.startsWith(day)).length
+    );
+
+    const chartConfig = (label, data, color) => ({
+        type: 'line',
+        data: {
+            labels: days.map(d => new Date(d).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })),
+            datasets: [{
+                label: label,
+                data: data,
+                borderColor: color,
+                backgroundColor: color + '20',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: color
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1, color: '#94a3b8' },
+                    grid: { color: '#f1f5f9' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#94a3b8' }
+                }
+            }
+        }
+    });
+
+    const ctxLeads = document.getElementById('chart-leads');
+    const ctxSold = document.getElementById('chart-sold');
+
+    if (ctxLeads) new Chart(ctxLeads, chartConfig('Novos Leads', leadsCountByDay, '#2563eb'));
+    if (ctxSold) new Chart(ctxSold, chartConfig('Imóveis Vendidos', salesCountByDay, '#10b981'));
 }
 
 /**

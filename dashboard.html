@@ -23,6 +23,7 @@
         })();
     </script>
     <script type="module" src="js/auth-guard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="bg-slate-50 flex flex-col md:flex-row">
@@ -63,25 +64,42 @@
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 transition-all hover:shadow-md">
                 <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Imóveis Ativos</p>
                 <p id="stat-active" class="text-3xl font-bold text-slate-900">--</p>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 transition-all hover:shadow-md">
                 <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Imóveis Inativos</p>
                 <p id="stat-inactive" class="text-3xl font-bold text-slate-400">--</p>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 transition-all hover:shadow-md">
                 <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Total de Leads</p>
                 <p id="stat-leads" class="text-3xl font-bold text-blue-600">--</p>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Origem (Site/WA)</p>
-                <p id="stat-origins" class="text-2xl font-bold text-slate-900">-- / --</p>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 transition-all hover:shadow-md">
+                <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Imóveis Vendidos</p>
+                <p id="stat-sold" class="text-3xl font-bold text-emerald-600">--</p>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 transition-all hover:shadow-md">
+                <h2 class="text-xl font-bold mb-6">Evolução de Leads</h2>
+                <div class="h-64">
+                    <canvas id="chart-leads"></canvas>
+                </div>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 transition-all hover:shadow-md">
+                <h2 class="text-xl font-bold mb-6">Evolução de Vendas</h2>
+                <div class="h-64">
+                    <canvas id="chart-sold"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 overflow-hidden transition-all hover:shadow-md">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold">Leads Recentes</h2>
                 <a href="leads.html" class="text-sm text-blue-600 font-semibold hover:underline">Ver todos</a>
