@@ -1,3 +1,5 @@
+import { supabase } from './supabase.js';
+
 let clientes = [];
 let editingId = null;
 
@@ -309,13 +311,14 @@ document.getElementById('form-cliente').onsubmit = async (e) => {
 
         // Representantes
         const reps = [];
-        document.querySelectorAll('#container-representantes > div').forEach((div, i) => {
+        document.querySelectorAll('#container-representantes [class*="bg-white"]').forEach((div) => {
+            const ligRadio = div.querySelector('input[type="radio"]:checked');
             reps.push({
                 nome: div.querySelector('.rep-nome').value,
                 cpf: div.querySelector('.rep-cpf').value,
                 rg: div.querySelector('.rep-rg').value,
                 nascimento: div.querySelector('.rep-nasc').value,
-                ligacao: getRadioValue(`rep_lig_${i + 1}`)
+                ligacao: ligRadio ? ligRadio.value : null
             });
         });
         payload.pj_representantes = reps;
