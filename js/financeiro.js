@@ -23,6 +23,28 @@ async function loadFinanceData() {
     }
 }
 
+function filterProperties() {
+    const start = document.getElementById('filter-start-date').value;
+    const end = document.getElementById('filter-end-date').value;
+
+    let filtered = [...allSoldProperties];
+
+    if (start) {
+        const startDate = new Date(start);
+        startDate.setHours(0, 0, 0, 0);
+        filtered = filtered.filter(p => new Date(p.updated_at) >= startDate);
+    }
+
+    if (end) {
+        const endDate = new Date(end);
+        endDate.setHours(23, 59, 59, 999);
+        filtered = filtered.filter(p => new Date(p.updated_at) <= endDate);
+    }
+
+    renderFinance(filtered);
+    updateTotals(filtered);
+}
+
 function updateTotals(properties) {
     let totalVendas = 0;
     let totalComissoes = 0;
@@ -146,6 +168,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tableContainer.classList.remove('hidden');
             cardsContainer.classList.add('hidden');
+        });
+    }
+
+    // Filtros de Data
+    const inputStart = document.getElementById('filter-start-date');
+    const inputEnd = document.getElementById('filter-end-date');
+    const btnClear = document.getElementById('btn-clear-filters');
+
+    if (inputStart && inputEnd) {
+        inputStart.addEventListener('input', filterProperties);
+        inputEnd.addEventListener('input', filterProperties);
+    }
+
+    if (btnClear) {
+        btnClear.addEventListener('click', () => {
+            inputStart.value = '';
+            inputEnd.value = '';
+            renderFinance(allSoldProperties);
+            updateTotals(allSoldProperties);
         });
     }
 });
