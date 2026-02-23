@@ -42,7 +42,7 @@ async function convertToWebP(file) {
 
           const fileName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
           resolve(new File([blob], fileName, { type: 'image/webp' }));
-        }, 'image/webp', 0.8);
+        }, 'image/webp', 0.65);
       };
       img.onerror = reject;
       img.src = event.target.result;
