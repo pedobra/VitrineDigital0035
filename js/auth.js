@@ -8,34 +8,36 @@ const isLoginPage = window.location.pathname.includes("login");
  * Inicializa Autenticação na página de Login
  */
 async function initAuth() {
-    // Se não estivermos no login, este script apenas gerencia eventos globais (como logout)
-    if (!isLoginPage) return;
-
     try {
         const { data } = await supabase.auth.getSession();
 
-        // Se já tiver sessão, pula o login e vai pro dashboard
         if (data.session) {
+            // Se estiver na tela de login e já logado, redireciona
             if (isLoginPage) {
                 window.location.href = "dashboard.html";
                 return;
             }
 
-            // Auto-preenchimento universal do cabeçalho admin
+            // Auto-preenchimento universal do cabeçalho admin (em qualquer página que tenha os IDs)
             const user = data.session.user;
             const userNameEl = document.getElementById('user-name');
             const userEmailEl = document.getElementById('user-email');
 
             if (userNameEl) userNameEl.innerText = user.user_metadata?.full_name || 'Usuário';
             if (userEmailEl) userEmailEl.innerText = user.email;
+        } else {
+            // Se não houver sessão e estiver no login, apenas garante que os componentes de tela apareçam
+            // (O auth-guard.js já se encarrega de expulsar o usuário de páginas privadas)
         }
     } catch (e) {
         console.warn("Erro na verificação de sessão.");
     }
 
-    // Se chegou aqui, não há sessão ou houve erro: mostra o formulário
-    if (loading) loading.style.display = "none";
-    if (app) app.style.display = "block";
+    // Lógica específica para exibir o formulário de login (apenas na página de login)
+    if (isLoginPage) {
+        if (loading) loading.style.display = "none";
+        if (app) app.style.display = "block";
+    }
 }
 
 // Executa a verificação inicial
