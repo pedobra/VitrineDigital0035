@@ -270,7 +270,7 @@ function renderLeads(leads) {
             else if (lowerOrigin.includes('footer')) originClass = 'bg-indigo-100 text-indigo-700';
 
             return `
-                <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
+                <tr id="lead-card-${l.id}" class="hover:bg-slate-50 transition-colors border-b border-slate-100">
                     <td class="py-4 px-6">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs">
@@ -395,6 +395,7 @@ window.deleteLead = async (id) => {
 
         // Atualiza a lista em memória
         allLeads = allLeads.filter(l => l.id !== id);
+        filteredLeads = filteredLeads.filter(l => l.id !== id);
     } catch (err) {
         console.error('Erro ao excluir lead:', err.message);
         alert('Não foi possível excluir o lead no momento.');
