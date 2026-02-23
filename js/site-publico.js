@@ -237,66 +237,146 @@ function mascaraTelefone(valor) {
 function setupLeadModal() {
     const modal = document.getElementById('lead-modal');
     const content = document.getElementById('lead-modal-content');
-    const closeBtn = document.getElementById('close-lead-modal');
     const form = document.getElementById('lead-capture-form');
+    const errorMsg = document.getElementById('lead-error-msg');
+    const inputTelefone = document.getElementById('lead-telefone');
 
     if (!modal || !content || !form) return;
 
-    const alreadySent = localStorage.getItem('imobi_lead_sent');
-    const alreadyShownThisSession = sessionStorage.getItem('lead_modal_shown');
+    // Apply mask to telefone input continuously if available
+    if (inputTelefone) {
+        inputTelefone.addEventListener('input', (e) => { e.target.value = mascaraTelefone(e.target.value); });
+    }
 
-    if (alreadySent === 'true' || alreadyShownThisSession === 'true') return;
+    const alreadySent = localStorage.getItem('imobi_lead_sent');
+    if (alreadySent === 'true') return;
+
+    let viewsCount = parseInt(sessionStorage.getItem('lead_modal_views') || '0', 10);
+    if (viewsCount >= 2) return;
 
     let opened = false;
+    let timerTrigger;
 
     const openModal = () => {
-        if (opened) return;
+        if (opened || viewsCount >= 2) return;
         opened = true;
-
-        // Limpa ouvintes para evitar disparos duplicados
-        document.removeEventListener('click', openModal);
-        document.removeEventListener('scroll', openModal);
-        if (typeof timerTrigger !== 'undefined') clearTimeout(timerTrigger);
-
         modal.classList.remove('opacity-0', 'pointer-events-none');
         content.classList.remove('scale-90', 'opacity-0');
         content.classList.add('scale-100', 'opacity-100');
 
-        sessionStorage.setItem('lead_modal_shown', 'true');
+        viewsCount++;
+        sessionStorage.setItem('lead_modal_views', viewsCount.toString());
     };
 
     const closeModal = () => {
+        if (!opened) return;
+        opened = false;
         modal.classList.add('opacity-0', 'pointer-events-none');
         content.classList.remove('scale-100', 'opacity-100');
         content.classList.add('scale-90', 'opacity-0');
+
+        if (viewsCount < 2) {
+            timerTrigger = setTimeout(openModal, 10000); // 10s para reabrir
+        }
     };
 
-    // Disparadores (Timer de 5s e primeira interação)
-    const timerTrigger = setTimeout(openModal, 5000);
-    document.addEventListener('click', openModal, { once: true });
-    document.addEventListener('scroll', openModal, { once: true });
+    // Primeira abertura em 8 segundos
+    if (viewsCount === 0) {
+        timerTrigger = setTimeout(openModal, 8000);
+    }
+    // Se o user recarregou a pagina ou navegou mas fechou na vez anterior (viewsCount = 1), 
+    // abre o segundo modal também depois de 8 segundos (ou não abrir no load, deixa pros 10s se fechar na msma pagina).
+    // O ideal: se ele estiver na pagina 2, conta como uma nova tentativa apos 8s tbm
+    else if (viewsCount === 1) {
+        timerTrigger = setTimeout(openModal, 8000);
+    }
 
-    if (closeBtn) closeBtn.addEventListener('click', (e) => { e.preventDefault(); closeModal(); });
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    const triggerFlashAndClose = () => {
+        const flash = document.createElement('div');
+        flash.className = 'fixed inset-0 bg-white z-[9999] opacity-0 transition-opacity duration-300 pointer-events-none';
+        document.body.appendChild(flash);
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                flash.classList.remove('opacity-0');
+                flash.classList.add('opacity-100');
+
+                setTimeout(() => {
+                    closeModal();
+                    flash.classList.remove('opacity-100');
+                    flash.classList.add('opacity-0');
+                    setTimeout(() => flash.remove(), 400);
+                }, 150);
+            });
+        });
+    };
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        const inputNome = document.getElementById('lead-nome');
+
+        let nome = inputNome ? inputNome.value.trim() : '';
+        let telefone = inputTelefone ? inputTelefone.value.trim() : '';
+
+        // Validating
+        if (!nome && !telefone) {
+            errorMsg.innerText = "Por favor, preencha o seu Nome e WhatsApp.";
+            errorMsg.classList.remove('hidden');
+            return;
+        } else if (!nome) {
+            errorMsg.innerText = "Por favor, digite o seu Nome.";
+            errorMsg.classList.remove('hidden');
+            return;
+        } else if (!telefone || telefone.length < 14) {
+            errorMsg.innerText = "Por favor, digite um WhatsApp válido.";
+            errorMsg.classList.remove('hidden');
+            return;
+        }
+
+        errorMsg.classList.add('hidden');
+
         const btn = form.querySelector('button[type="submit"]');
-        const fields = document.getElementById('lead-form-fields');
-        const success = document.getElementById('lead-success-msg');
+        const originalBtnText = btn.innerText;
         btn.disabled = true;
-        btn.innerText = "Enviando...";
+        btn.innerText = "Ativando...";
+
         try {
             const { error } = await supabase.from('leads').insert({
-                nome: document.getElementById('lead-nome').value,
-                telefone: document.getElementById('lead-telefone').value,
-                origem: 'pagina', imovel_interesse: 'Interesse Geral', created_at: new Date().toISOString()
+                nome: nome,
+                telefone: telefone,
+                origem: 'modal_premium', imovel_interesse: 'Interesse VIP', created_at: new Date().toISOString()
             });
+
             if (error) throw error;
+
+            localStorage.setItem('imobi_lead_sent', 'true');
+            viewsCount = 99; // limit hit
+
+            const fields = document.getElementById('lead-form-fields');
+            const success = document.getElementById('lead-success-msg');
             if (fields) fields.classList.add('hidden');
             if (success) success.classList.remove('hidden');
-            localStorage.setItem('imobi_lead_sent', 'true');
-            setTimeout(closeModal, 2000);
-        } catch (err) { btn.disabled = false; btn.innerText = "Quero Atendimento"; }
+
+            setTimeout(() => {
+                triggerFlashAndClose();
+            }, 600);
+
+        } catch (err) {
+            console.error('Lead Error', err);
+            errorMsg.innerText = "Erro ao ativar. Tente novamente.";
+            errorMsg.classList.remove('hidden');
+            if (btn) {
+                btn.disabled = false;
+                btn.innerText = originalBtnText;
+            }
+        }
     });
 }
 

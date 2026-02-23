@@ -85,37 +85,32 @@
     </main>
 
     <div id="lead-modal"
-        class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-500">
-        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden transform scale-90 opacity-0 transition-all duration-500 ease-out"
+        class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-500">
+        <div class="bg-white/70 backdrop-blur-2xl border border-white/50 w-full max-w-md rounded-[2.5rem] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.5)] overflow-hidden transform scale-90 opacity-0 transition-all duration-500 ease-out"
             id="lead-modal-content">
             <div class="p-8 md:p-12">
-                <div class="flex justify-between items-start mb-8">
-                    <div>
-                        <h3 class="text-2xl font-black text-slate-900 leading-tight">Melhore sua experiência</h3>
-                        <p class="text-slate-500 mt-3 font-medium">Responda abaixo para receber atendimento prioritário.
-                        </p>
-                    </div>
-                    <button id="close-lead-modal"
-                        class="text-slate-400 hover:text-slate-900 p-2 hover:bg-slate-100 rounded-full transition-all">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+                <div class="flex flex-col items-center text-center justify-center mb-8">
+                    <h3 class="text-2xl font-black text-slate-900 leading-tight">Para uma experiência premium, preencha
+                        os campos abaixo.</h3>
                 </div>
                 <form id="lead-capture-form" class="space-y-6">
                     <div id="lead-success-msg"
-                        class="hidden bg-emerald-50 text-emerald-700 p-6 rounded-3xl text-center font-bold border border-emerald-100">
-                        Enviado com sucesso!
+                        class="hidden bg-emerald-500/20 text-emerald-900 p-6 rounded-3xl text-center font-bold border border-emerald-500/30 backdrop-blur-md">
+                        Modo Premium Ativado!
                     </div>
                     <div id="lead-form-fields" class="space-y-5">
-                        <input type="text" id="lead-nome" required placeholder="Nome Completo"
-                            class="w-full p-5 bg-slate-50 border border-slate-100 rounded-[1.25rem] outline-none">
-                        <input type="tel" id="lead-telefone" required placeholder="WhatsApp"
-                            class="w-full p-5 bg-slate-50 border border-slate-100 rounded-[1.25rem] outline-none">
+                        <input type="text" id="lead-nome" placeholder="Nome Completo"
+                            class="w-full p-5 bg-white/60 focus:bg-white/90 border border-white/50 rounded-[1.25rem] outline-none shadow-inner placeholder:text-slate-500 text-slate-900 transition-all font-medium">
+                        <input type="tel" id="lead-telefone" placeholder="WhatsApp"
+                            class="w-full p-5 bg-white/60 focus:bg-white/90 border border-white/50 rounded-[1.25rem] outline-none shadow-inner placeholder:text-slate-500 text-slate-900 transition-all font-medium">
+
+                        <!-- Mensagem de erro dinâmica -->
+                        <div id="lead-error-msg"
+                            class="hidden text-red-600 text-sm font-bold text-center drop-shadow-sm"></div>
+
                         <button type="submit"
-                            class="w-full bg-blue-600 text-white py-5 rounded-[1.5rem] font-black">Quero
-                            Atendimento</button>
+                            class="w-full bg-slate-900/90 hover:bg-slate-900 text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest shadow-xl backdrop-blur-sm transition-all active:scale-95">Aceitar
+                        </button>
                     </div>
                 </form>
             </div>
