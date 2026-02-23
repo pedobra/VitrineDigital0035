@@ -348,10 +348,13 @@ function setupLeadModal() {
         btn.innerText = "Ativando...";
 
         try {
+            const currentOrigin = viewsCount === 1 ? 'Popup pela 1ª vez' : 'Popup pela 2ª vez';
             const { error } = await supabase.from('leads').insert({
                 nome: nome,
                 telefone: telefone,
-                origem: 'modal_premium', imovel_interesse: 'Interesse VIP', created_at: new Date().toISOString()
+                origem: currentOrigin,
+                imovel_interesse: 'Interesse VIP',
+                created_at: new Date().toISOString()
             });
 
             if (error) throw error;
@@ -406,12 +409,11 @@ function setupFooterLeadForm() {
     form.onsubmit = async (e) => {
         e.preventDefault();
 
-        // Validação de Checkboxes
-        const selectedIntents = Array.from(checkboxes)
-            .filter(cb => cb.checked)
-            .map(cb => cb.value);
+        // Validação de Radio (Substituiu Checkboxes)
+        const selectedIntentRadio = Array.from(checkboxes).find(cb => cb.checked);
+        const selectedIntent = selectedIntentRadio ? selectedIntentRadio.value : null;
 
-        if (selectedIntents.length === 0) {
+        if (!selectedIntent) {
             checkboxContainer.classList.add('border-red-400', 'ring-2', 'ring-red-100');
             checkboxError.classList.remove('hidden');
             checkboxContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -426,13 +428,15 @@ function setupFooterLeadForm() {
         btn.innerText = "Enviando...";
 
         try {
+            const finalOrigin = selectedIntent === 'Buscar Imóvel' ? 'Footer Buscar Imóvel' : 'Footer Vender Imóvel';
+
             const { error } = await supabase.from('leads').insert({
                 nome: document.getElementById('footer-nome').value,
                 email: document.getElementById('footer-email').value,
                 telefone: inputTelefone.value,
                 mensagem: document.getElementById('footer-mensagem').value,
-                origem: `footer - ${selectedIntents.join(' / ')}`,
-                imovel_interesse: selectedIntents.join(' / '),
+                origem: finalOrigin,
+                imovel_interesse: selectedIntent,
                 created_at: new Date().toISOString()
             });
 

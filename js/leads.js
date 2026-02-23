@@ -10,11 +10,11 @@ let filteredLeads = [];
 function formatOriginLabel(origin) {
     if (!origin) return "N/A";
     const lower = origin.toLowerCase();
-    
+
     // Fallbacks para termos comuns
     if (lower === 'whatsapp') return 'WhatsApp';
     if (lower === 'pagina') return 'Página Principal';
-    
+
     // Formatação amigável para outros termos (ex: FOOTER - IMÓVEL DESEJADO -> Footer - Imóvel Desejado)
     return origin.split(' ').map(word => {
         if (word === '-' || word === '–') return word;
@@ -23,20 +23,24 @@ function formatOriginLabel(origin) {
 }
 
 /**
- * Popula o select de origens com base nos dados reais do banco
+ * Popula o select de origens com opções fixas e controladas
  */
 function populateOriginFilter(leads) {
     const originFilter = document.getElementById('filter-origin');
     if (!originFilter) return;
 
-    // Obtém origens únicas e remove valores vazios
-    const uniqueOrigins = [...new Set(leads.map(l => l.origem).filter(Boolean))].sort();
-    
-    // Preserva a opção padrão
+    // As 4 opções fixas determinadas pelo negócio
+    const strictOrigins = [
+        "Popup pela 1ª vez",
+        "Popup pela 2ª vez",
+        "Footer Buscar Imóvel",
+        "Footer Vender Imóvel"
+    ];
+
     let html = '<option value="">Todas as Origens</option>';
-    
-    uniqueOrigins.forEach(origin => {
-        html += `<option value="${origin}">${formatOriginLabel(origin)}</option>`;
+
+    strictOrigins.forEach(origin => {
+        html += `<option value="${origin}">${origin}</option>`;
     });
 
     originFilter.innerHTML = html;
@@ -53,10 +57,10 @@ async function loadLeads() {
             .order('created_at', { ascending: false });
 
         if (error) throw error;
-        
+
         allLeads = leads || [];
         filteredLeads = [...allLeads];
-        
+
         // Popula os filtros dinamicamente antes de renderizar
         populateOriginFilter(allLeads);
         renderLeads(filteredLeads);
@@ -88,7 +92,7 @@ function setupFilters() {
         filteredLeads = allLeads.filter(l => {
             const matchesOrigin = !origin || l.origem === origin;
             const matchesInterest = !interest || (l.imovel_interesse || '').toLowerCase().includes(interest);
-            
+
             // Lógica de Data
             let matchesDate = true;
             if (start || end) {
@@ -139,11 +143,11 @@ function renderLeads(leads) {
     }
 
     container.innerHTML = leads.map(l => {
-        const date = new Date(l.created_at).toLocaleDateString('pt-BR', { 
-            day: '2-digit', 
-            month: '2-digit', 
-            hour: '2-digit', 
-            minute: '2-digit' 
+        const date = new Date(l.created_at).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
         });
 
         const cleanPhone = (l.telefone || '').replace(/\D/g, '');
@@ -154,7 +158,7 @@ function renderLeads(leads) {
 
         const lowerOrigin = (l.origem || '').toLowerCase();
         let originClass = 'bg-slate-100 text-slate-700';
-        
+
         if (lowerOrigin === 'whatsapp') {
             originClass = 'bg-emerald-100 text-emerald-700';
         } else if (lowerOrigin === 'pagina') {
@@ -214,12 +218,12 @@ function renderLeads(leads) {
  */
 function exportLeadsToCSV(leads) {
     const headers = ['Nome', 'Telefone', 'Origem', 'Imóvel / Interesse', 'Data'];
-    
+
     const rows = leads.map(l => {
         const date = new Date(l.created_at).toLocaleDateString('pt-BR', {
             day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
         });
-        
+
         // Escape de aspas e ponto e vírgula para evitar quebra do CSV
         const escape = (text) => `"${(text || '').toString().replace(/"/g, '""')}"`;
 
@@ -233,16 +237,16 @@ function exportLeadsToCSV(leads) {
     });
 
     const csvContent = [headers.join(';'), ...rows].join('\n');
-    
+
     // Blob com UTF-8 BOM para garantir acentos no Excel
     const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-    
+
     const link = document.createElement('a');
     link.setAttribute('href', url);
     link.setAttribute('download', 'Leads_data.csv');
     link.style.visibility = 'hidden';
-    
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -268,7 +272,7 @@ window.deleteLead = async (id) => {
             card.style.transform = 'scale(0.9)';
             setTimeout(() => card.remove(), 300);
         }
-        
+
         // Atualiza a lista em memória
         allLeads = allLeads.filter(l => l.id !== id);
     } catch (err) {
