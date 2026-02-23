@@ -338,10 +338,30 @@ document.getElementById('property-form').onsubmit = async (e) => {
 
         if (propertyId) {
             const idsKeep = uploadedPhotos.filter(p => p.existing).map(p => p.id);
+
+            // Buscar fotos que serão deletadas para também removê-las do Storage
+            let queryParaDeletar = supabase.from('imoveis_fotos').select('*').eq('imovel_id', imovelSalvo.id);
             if (idsKeep.length > 0) {
-                await supabase.from('imoveis_fotos').delete().eq('imovel_id', imovelSalvo.id).not('id', 'in', `(${idsKeep.join(',')})`);
-            } else {
-                await supabase.from('imoveis_fotos').delete().eq('imovel_id', imovelSalvo.id);
+                queryParaDeletar = queryParaDeletar.not('id', 'in', `(${idsKeep.join(',')})`);
+            }
+            const { data: fotosParaDeletar } = await queryParaDeletar;
+
+            if (fotosParaDeletar && fotosParaDeletar.length > 0) {
+                // 1. Extrair os caminhos (paths) do Storage e remover os arquivos físicos
+                const pathsToRemove = fotosParaDeletar.map(foto => {
+                    if (foto.url && foto.url.includes('/public/imoveis/')) {
+                        return foto.url.split('/public/imoveis/')[1];
+                    }
+                    return null;
+                }).filter(p => p !== null);
+
+                if (pathsToRemove.length > 0) {
+                    await supabase.storage.from('imoveis').remove(pathsToRemove);
+                }
+
+                // 2. Apagar os registros isolados do banco de dados
+                const idsToDelete = fotosParaDeletar.map(f => f.id);
+                await supabase.from('imoveis_fotos').delete().in('id', idsToDelete);
             }
         }
 

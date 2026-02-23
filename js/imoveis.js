@@ -18,10 +18,10 @@ async function loadProperties() {
     } catch (err) {
         console.error('Erro ao carregar imóveis:', err.message);
         const feedback = `<p class="p-10 text-center text-red-500 font-medium">Erro ao carregar dados: ${err.message}</p>`;
-        
+
         const tableBody = document.getElementById('properties-table-body');
         if (tableBody) tableBody.innerHTML = `<tr><td colspan="5">${feedback}</td></tr>`;
-        
+
         const mobileContainer = document.getElementById('properties-cards-mobile');
         if (mobileContainer) mobileContainer.innerHTML = feedback;
     }
@@ -33,7 +33,7 @@ async function loadProperties() {
 function renderProperties(properties) {
     const tableBody = document.getElementById('properties-table-body');
     const mobileCards = document.getElementById('properties-cards-mobile');
-    
+
     if (!tableBody || !mobileCards) return;
 
     if (properties.length === 0) {
@@ -149,8 +149,23 @@ document.addEventListener('click', (e) => {
 function setupTableActions() {
     document.querySelectorAll('.btn-delete').forEach(btn => {
         btn.onclick = async (e) => {
-            if (!confirm('Excluir este imóvel definitivamente?')) return;
+            if (!confirm('Excluir este imóvel e todas as suas fotos definitivamente?')) return;
             const id = btn.dataset.id;
+
+            // 1. Remover fisicamente as fotos do Storage
+            const { data: fotos } = await supabase.from('imoveis_fotos').select('url').eq('imovel_id', id);
+            if (fotos && fotos.length > 0) {
+                const pathsToRemove = fotos.map(f => {
+                    if (f.url && f.url.includes('/public/imoveis/')) return f.url.split('/public/imoveis/')[1];
+                    return null;
+                }).filter(p => p !== null);
+
+                if (pathsToRemove.length > 0) {
+                    await supabase.storage.from('imoveis').remove(pathsToRemove);
+                }
+            }
+
+            // 2. Remover do banco de dados
             const { error } = await supabase.from('imoveis').delete().eq('id', id);
             if (!error) loadProperties();
             else alert('Erro: ' + error.message);
