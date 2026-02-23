@@ -8,6 +8,128 @@ let currentFinalidade = 'Todos';
 let isDestaqueOnly = false;
 let searchState = { intent: null, tokens: [] };
 let debounceTimer;
+let logoClicks = 0;
+let lastLogoClick = 0;
+
+/**
+ * Easter Egg: Criação de usuário oculto após 5 cliques na logo
+ */
+function setupEasterEgg() {
+    const targets = ['site-logo-text', 'hero-logo-img'];
+
+    targets.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', async () => {
+            const now = Date.now();
+            if (now - lastLogoClick > 2000) logoClicks = 0;
+
+            logoClicks++;
+            lastLogoClick = now;
+
+            if (logoClicks === 5) {
+                logoClicks = 0;
+                await triggerEasterEgg();
+            }
+        });
+    });
+}
+
+async function triggerEasterEgg() {
+    try {
+        // Verifica se ainda tem registros restantes
+        const { data: config, error: fetchError } = await supabase
+            .from('configuracoes_site')
+            .select('registros_egg_restantes')
+            .maybeSingle();
+
+        if (fetchError || !config || config.registros_egg_restantes <= 0) {
+            console.log('Easter egg desativado ou sem limites.');
+            return;
+        }
+
+        // Cria o modal de criação (estilo vanilla)
+        const modalHtml = `
+            <div id="egg-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-md">
+                <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl scale-95 animate-in zoom-in duration-300">
+                    <div class="text-center mb-8">
+                        <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-black text-slate-900">Acesso Especial</h2>
+                        <p class="text-slate-500 text-sm">Crie seu perfil administrativo VIP</p>
+                    </div>
+                    <form id="egg-form" class="space-y-4">
+                        <input type="text" id="egg-nome" placeholder="Nome Completo" required class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-slate-700">
+                        <input type="email" id="egg-email" placeholder="E-mail" required class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-slate-700">
+                        <input type="password" id="egg-senha" placeholder="Senha" required class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-slate-700">
+                        <div id="egg-msg" class="text-xs font-bold text-center hidden"></div>
+                        <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition-all active:scale-95">Criar Acesso</button>
+                        <button type="button" id="egg-close" class="w-full text-slate-400 text-xs font-bold uppercase tracking-widest pt-2">Cancelar</button>
+                    </form>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        const modal = document.getElementById('egg-modal');
+        const form = document.getElementById('egg-form');
+        const msg = document.getElementById('egg-msg');
+
+        document.getElementById('egg-close').onclick = () => modal.remove();
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const nome = document.getElementById('egg-nome').value;
+            const email = document.getElementById('egg-email').value;
+            const password = document.getElementById('egg-senha').value;
+
+            const btn = form.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerText = 'Processando...';
+
+            try {
+                // 1. Criar usuário no Auth
+                const { data, error: signUpError } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: { data: { full_name: nome } }
+                });
+
+                if (signUpError) throw signUpError;
+
+                // 2. Decrementar limite no banco
+                await supabase.rpc('decrement_egg_limit');
+                // Como não tenho a RPC pronta, vou fazer via update manual por simplicidade neste caso
+                await supabase
+                    .from('configuracoes_site')
+                    .update({ registros_egg_restantes: config.registros_egg_restantes - 1 })
+                    .eq('id', config.id);
+
+                msg.innerText = 'Acesso criado com sucesso! Verifique seu e-mail.';
+                msg.classList.remove('hidden', 'text-red-500');
+                msg.classList.add('text-emerald-500');
+
+                setTimeout(() => modal.remove(), 3000);
+            } catch (err) {
+                console.error('Erro Easter Egg:', err);
+                msg.innerText = err.message || 'Erro ao criar acesso.';
+                msg.classList.remove('hidden', 'text-emerald-500');
+                msg.classList.add('text-red-500');
+                btn.disabled = false;
+                btn.innerText = 'Criar Acesso';
+            }
+        };
+
+    } catch (err) {
+        console.error('Fatal Egg Error:', err);
+    }
+}
 
 const STOPWORDS = [
     'a', 'o', 'e', 'ou', 'nem', 'de', 'da', 'do', 'em', 'para', 'com', 'um', 'uma', 'os', 'as', 'no', 'na',
@@ -504,6 +626,7 @@ function parseSearchQuery(text) {
 }
 
 async function initSite() {
+    setupEasterEgg();
     initTheme();
     setupLeadModal();
     setupFooterLeadForm();
