@@ -103,11 +103,9 @@ async function triggerEasterEgg() {
 
                 if (signUpError) throw signUpError;
 
-                // 2. Decrementar limite no banco (Versão manual segura)
-                await supabase
-                    .from('configuracoes_site')
-                    .update({ registros_egg_restantes: Math.max(0, config.registros_egg_restantes - 1) })
-                    .eq('id', config.id);
+                // 2. Decrementar limite no banco via RPC (Mais seguro e evita políticas de RLS)
+                const { error: rpcError } = await supabase.rpc('decrement_egg_limit');
+                if (rpcError) console.error('Erro ao descontar limite:', rpcError);
 
                 msg.innerText = 'Acesso criado com sucesso! Verifique seu e-mail.';
                 msg.classList.remove('hidden', 'text-red-500');
