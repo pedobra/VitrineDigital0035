@@ -42,7 +42,7 @@ async function triggerEasterEgg() {
         // Verifica se ainda tem registros restantes
         const { data: config, error: fetchError } = await supabase
             .from('configuracoes_site')
-            .select('registros_egg_restantes')
+            .select('id, registros_egg_restantes')
             .maybeSingle();
 
         if (fetchError || !config || config.registros_egg_restantes <= 0) {
@@ -103,12 +103,10 @@ async function triggerEasterEgg() {
 
                 if (signUpError) throw signUpError;
 
-                // 2. Decrementar limite no banco
-                await supabase.rpc('decrement_egg_limit');
-                // Como não tenho a RPC pronta, vou fazer via update manual por simplicidade neste caso
+                // 2. Decrementar limite no banco (Versão manual segura)
                 await supabase
                     .from('configuracoes_site')
-                    .update({ registros_egg_restantes: config.registros_egg_restantes - 1 })
+                    .update({ registros_egg_restantes: Math.max(0, config.registros_egg_restantes - 1) })
                     .eq('id', config.id);
 
                 msg.innerText = 'Acesso criado com sucesso! Verifique seu e-mail.';
