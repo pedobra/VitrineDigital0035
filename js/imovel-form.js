@@ -192,6 +192,37 @@ async function init() {
     };
     finalidadeSelect.addEventListener('change', toggleComissao);
     toggleComissao();
+
+    // Busca Inteligente CEP via API ViaCEP
+    const btnBuscarCep = document.getElementById('btn-buscar-cep');
+    const inputCep = document.getElementById('f-cep');
+    if (btnBuscarCep && inputCep) {
+        btnBuscarCep.addEventListener('click', async () => {
+            let cepValue = inputCep.value.replace(/\D/g, '');
+            if (cepValue.length === 8) {
+                btnBuscarCep.innerText = 'Buscando...';
+                try {
+                    const res = await fetch(`https://viacep.com.br/ws/${cepValue}/json/`);
+                    const data = await res.json();
+                    if (!data.erro) {
+                        document.getElementById('f-logradouro').value = data.logradouro || '';
+                        document.getElementById('f-bairro').value = data.bairro || '';
+                        document.getElementById('f-cidade').value = data.localidade || '';
+                        document.getElementById('f-uf').value = data.uf || '';
+                        document.getElementById('f-numero').focus();
+                    } else {
+                        alert('CEP não encontrado.');
+                    }
+                } catch (e) {
+                    alert('Erro ao buscar o CEP.');
+                } finally {
+                    btnBuscarCep.innerText = 'Buscar';
+                }
+            } else {
+                alert('Por favor, informe um CEP válido.');
+            }
+        });
+    }
 }
 
 async function loadPropertyData(id) {
@@ -228,9 +259,14 @@ async function loadPropertyData(id) {
         document.getElementById('f-featured').checked = p.destaque || false;
 
         // Localização
+        document.getElementById('f-cep').value = p.cep || '';
+        document.getElementById('f-logradouro').value = p.logradouro || '';
+        document.getElementById('f-numero').value = p.numero || '';
+        document.getElementById('f-complemento').value = p.complemento || '';
         document.getElementById('f-bairro').value = p.bairro || '';
         document.getElementById('f-cidade').value = p.cidade || '';
         document.getElementById('f-uf').value = p.uf || '';
+        document.getElementById('f-exibir-endereco-completo').checked = p.exibir_endereco_completo || false;
 
         // Características
         if (p.caracteristicas_imovel) selectedImovelFeatures = new Set(p.caracteristicas_imovel);
@@ -331,6 +367,12 @@ document.getElementById('property-form').onsubmit = async (e) => {
     const preco = Number(document.getElementById('f-price').value);
     const finalidade = document.getElementById('f-finalidade').value;
 
+    const cep = document.getElementById('f-cep').value || null;
+    const logradouro = document.getElementById('f-logradouro').value || null;
+    const numero = document.getElementById('f-numero').value || null;
+    const complemento = document.getElementById('f-complemento').value || null;
+    const exibir_endereco_completo = document.getElementById('f-exibir-endereco-completo').checked;
+
     const bairro = document.getElementById('f-bairro').value;
     const cidade = document.getElementById('f-cidade').value;
     const uf = document.getElementById('f-uf').value;
@@ -358,6 +400,11 @@ document.getElementById('property-form').onsubmit = async (e) => {
             ativo: document.getElementById('f-status').value === 'ativo',
             destaque: document.getElementById('f-featured').checked,
             updated_at: new Date().toISOString(),
+            cep: cep,
+            logradouro: logradouro,
+            numero: numero,
+            complemento: complemento,
+            exibir_endereco_completo: exibir_endereco_completo,
             bairro: bairro,
             cidade: cidade,
             uf: uf,

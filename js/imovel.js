@@ -275,6 +275,16 @@ function renderizarImovel(p, config) {
     if (p.banheiros > 0) specItems.push(`<div class="bg-slate-50 p-5 rounded-3xl text-center flex items-center justify-center min-h-[80px]"><span class="text-slate-900 font-black text-sm">Banheiros: ${p.banheiros}</span></div>`);
     if (p.vagas_garagem > 0) specItems.push(`<div class="bg-slate-50 p-5 rounded-3xl text-center flex items-center justify-center min-h-[80px]"><span class="text-slate-900 font-black text-sm">Vagas: ${p.vagas_garagem}</span></div>`);
 
+    // Construção do endereço do imóvel
+    let enderecoExibicao = `${p.bairro}, ${p.cidade} - ${p.uf}`;
+    if (p.exibir_endereco_completo && p.logradouro) {
+        let partes = [p.logradouro];
+        if (p.numero) partes.push(p.numero);
+        if (p.complemento) partes.push(p.complemento);
+        const logradouroCompleto = partes.join(', ');
+        enderecoExibicao = `${logradouroCompleto} - ${p.bairro}, ${p.cidade} - ${p.uf}`;
+    }
+
     container.innerHTML = `
         <div class="animate-in fade-in slide-in-from-bottom-4 duration-1000">
             <!-- HEADER INFO -->
@@ -292,7 +302,7 @@ function renderizarImovel(p, config) {
                     <h1 class="text-3xl md:text-5xl font-black text-slate-900 leading-tight tracking-tighter">${p.titulo}</h1>
                     <p class="text-slate-500 font-medium flex items-center gap-2">
                         <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        ${p.bairro}, ${p.cidade} - ${p.uf}
+                        ${enderecoExibicao}
                     </p>
                 </div>
                 <div class="text-left md:text-right space-y-1">
