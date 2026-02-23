@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <title>Detalhes do Imóvel - ImobiRecife</title>
     <meta name="description" content="Veja todos os detalhes deste imóvel exclusivo na ImobiRecife.">
-    
+
     <!-- Script crítico para evitar FOUC -->
     <script>
-        (function() {
+        (function () {
             try {
                 const theme = localStorage.getItem('imobimaster_theme_tokens');
                 if (theme) {
@@ -19,7 +20,7 @@
                         root.style.setProperty(key, value);
                     });
                 }
-            } catch (e) {}
+            } catch (e) { }
         })();
     </script>
 
@@ -27,9 +28,15 @@
     <link rel="stylesheet" href="css/style.css">
     <style>
         @keyframes shimmer {
-            0% { background-position: -468px 0; }
-            100% { background-position: 468px 0; }
+            0% {
+                background-position: -468px 0;
+            }
+
+            100% {
+                background-position: 468px 0;
+            }
         }
+
         .skeleton {
             background: #f6f7f8;
             background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
@@ -37,20 +44,32 @@
             background-size: 800px 104px;
             animation: shimmer 1.2s infinite linear;
         }
-        .loading-state { display: block; }
-        .content-state { display: none; }
+
+        .loading-state {
+            display: block;
+        }
+
+        .content-state {
+            display: none;
+        }
     </style>
 </head>
+
 <body class="bg-slate-50 font-['Inter']">
     <nav class="bg-white/90 backdrop-blur-md border-b border-slate-100 py-4 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <a href="index.html" class="font-bold text-slate-900 flex items-center gap-2 text-sm md:text-base hover:text-blue-600 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            <a href="index.html"
+                class="font-bold text-slate-900 flex items-center gap-2 text-sm md:text-base hover:text-blue-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
                 Voltar para a busca
             </a>
-            
+
             <div class="flex items-center">
-                <a id="header-cta-contato" href="#" class="hidden bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-blue-700 transition-all text-sm active:scale-95 shadow-lg shadow-blue-100">
+                <a id="header-cta-contato" href="#"
+                    class="hidden bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-blue-700 transition-all text-sm active:scale-95 shadow-lg shadow-blue-100">
                     Entre em contato
                 </a>
             </div>
@@ -64,7 +83,9 @@
                     <div class="w-full rounded-[2rem] aspect-video skeleton"></div>
                 </div>
                 <div class="space-y-6">
-                    <div class="flex gap-2"><div class="w-24 h-6 skeleton rounded-full"></div></div>
+                    <div class="flex gap-2">
+                        <div class="w-24 h-6 skeleton rounded-full"></div>
+                    </div>
                     <div class="h-12 w-3/4 skeleton rounded"></div>
                     <div class="h-8 w-1/4 skeleton rounded"></div>
                 </div>
@@ -76,6 +97,12 @@
 
     <footer class="bg-white border-t border-slate-100 py-12 mt-20">
         <div class="max-w-7xl mx-auto px-4 text-center">
+            <div id="footer-fiscal-info" class="hidden mb-8">
+                <p id="footer-razao-social" class="font-bold text-slate-800 text-sm mb-1"></p>
+                <p class="text-xs text-slate-500 font-medium whitespace-pre-wrap"><span id="footer-cnpj"></span><span
+                        id="footer-endereco-separator" class="hidden text-slate-300 mx-2">|</span><span
+                        id="footer-endereco"></span></p>
+            </div>
             <p id="footer-copyright-text" class="text-slate-400 text-sm font-medium">Carregando</p>
         </div>
     </footer>
@@ -85,4 +112,5 @@
 
     <script type="module" src="js/imovel.js"></script>
 </body>
+
 </html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Preview de Cards - Leads</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-100 p-10 font-sans min-h-screen flex flex-col gap-16">
+
+    <div class="max-w-7xl mx-auto w-full">
+        <h1 class="text-3xl font-black text-slate-800 mb-8 border-b pb-4">Opção 1: "Moderno & Glassmorphism" (Elegante,
+            bordas suaves, botão largo)</h1>
+
+        <div
+            class="w-full max-w-sm bg-white/80 backdrop-blur-xl p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40 group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-100 to-indigo-50 flex items-center justify-center text-blue-600 font-black text-lg shadow-inner ring-4 ring-white">
+                        T</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Teste Cliente</h3>
+                        <p class="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">23/02, 00:46
+                        </p>
+                    </div>
+                </div>
+                <span
+                    class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest bg-blue-50 text-blue-600 whitespace-nowrap border border-blue-100/50">Footer
+                    Buscar Imóvel</span>
+            </div>
+
+            <div class="space-y-3 px-1 mb-6">
+                <div class="flex items-center gap-3 text-slate-600 text-sm">
+                    <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">📞
+                    </div>
+                    <span class="font-bold">(85) 99992-4721</span>
+                </div>
+                <div class="flex items-center gap-3 text-slate-600 text-sm">
+                    <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">✉️
+                    </div>
+                    <span class="font-bold truncate">r2cabreu@gmail.com</span>
+                </div>
+
+                <div class="mt-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-100 backdrop-blur-sm">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Interesse</p>
+                    <p class="text-sm font-bold text-slate-800">Buscar Imóvel</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2">
+                <button class="p-4 rounded-xl text-red-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                    title="Excluir">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
+                <button
+                    class="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-400 text-white py-4 rounded-xl font-black text-sm shadow-lg shadow-emerald-200 hover:shadow-emerald-300 transition-all active:scale-95 flex items-center justify-center gap-2">
+                    WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto w-full">
+        <h1 class="text-3xl font-black text-slate-800 mb-8 border-b pb-4">Opção 2: "Clean & Corporativo" (Contraste
+            forte, Ícone de WhatsApp flutuante redondo)</h1>
+
+        <div
+            class="w-full max-w-sm bg-white p-6 rounded-[1.5rem] shadow-sm border border-slate-200 hover:border-blue-300 transition-all relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+            <div class="flex justify-between items-start mb-5 pl-2">
+                <div>
+                    <span
+                        class="px-2 py-1 rounded bg-indigo-100 text-indigo-700 text-[10px] font-black tracking-widest uppercase mb-3 block w-max">Footer
+                        Buscar Imóvel</span>
+                    <h3 class="font-black text-slate-900 text-xl">Teste Cliente</h3>
+                    <p class="text-[12px] font-bold text-slate-400 mt-1">Recebido em 23/02 às 00:46</p>
+                </div>
+            </div>
+
+            <div class="pl-2 space-y-2 mb-6 border-b border-slate-100 pb-6">
+                <span
+                    class="block bg-slate-50 text-slate-600 px-3 py-2 rounded-lg font-bold text-sm border border-slate-100">📞
+                    (85) 99992-4721</span>
+                <span
+                    class="block bg-slate-50 text-slate-600 px-3 py-2 rounded-lg font-bold text-sm border border-slate-100 truncate">✉️
+                    r2cabreu@gmail.com</span>
+            </div>
+
+            <div class="pl-2 flex justify-between items-end">
+                <div>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Interesse</p>
+                    <p class="font-bold text-slate-800">Buscar Imóvel</p>
+                </div>
+                <button
+                    class="w-12 h-12 flex items-center justify-center bg-emerald-500 rounded-full text-white shadow-lg shadow-emerald-100 hover:scale-110 active:scale-95 transition-all">
+                    Wpp
+                </button>
+            </div>
+
+            <button class="absolute top-4 right-4 text-slate-300 hover:text-red-500 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+
+    <div class="max-w-7xl mx-auto w-full mb-20">
+        <h1 class="text-3xl font-black text-slate-800 mb-8 border-b pb-4">Opção 3: "Minimalista em Blocos" (Layout
+            encaixado com cor de fundo super suave)</h1>
+
+        <div
+            class="w-full max-w-sm bg-[#f8fafc] p-2 rounded-[2rem] border-2 border-slate-100 hover:border-slate-200 transition-all flex flex-col gap-2">
+
+            <div class="bg-white p-5 rounded-[1.5rem] shadow-sm flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 bg-slate-900 rounded-full text-white flex items-center justify-center font-bold">
+                        T</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-md">Teste Cliente</h3>
+                        <p class="text-[10px] font-bold text-slate-400">23/02, 00:46</p>
+                    </div>
+                </div>
+                <div class="bg-indigo-50 px-2 py-1 rounded text-indigo-600 text-[10px] font-bold uppercase">Busca</div>
+            </div>
+
+            <div class="bg-white p-5 rounded-[1.5rem] shadow-sm space-y-2">
+                <p class="text-sm font-bold text-slate-600 flex justify-between">
+                    <span class="text-slate-400 text-xs uppercase tracking-widest">Telefone</span>
+                    (85) 99992-4721
+                </p>
+                <div class="h-px bg-slate-50 w-full my-1"></div>
+                <p class="text-sm font-bold text-slate-600 flex justify-between">
+                    <span class="text-slate-400 text-xs uppercase tracking-widest">E-mail</span>
+                    <span class="truncate max-w-[150px]">r2cabreu@gmail.com</span>
+                </p>
+            </div>
+
+            <div class="flex gap-2">
+                <button
+                    class="w-16 bg-white rounded-[1.5rem] flex items-center justify-center text-red-400 hover:bg-red-50 shadow-sm border border-transparent hover:border-red-100 transition-all">Del</button>
+                <button
+                    class="flex-1 bg-emerald-500 text-white rounded-[1.5rem] py-4 font-bold text-md hover:bg-emerald-600 shadow-sm transition-all focus:scale-95">
+                    Chamar no Web
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+
+</html>

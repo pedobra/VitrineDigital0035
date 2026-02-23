@@ -3,6 +3,7 @@ import { supabase } from './supabase.js';
 
 let allLeads = [];
 let filteredLeads = [];
+let currentViewMode = 'cards'; // 'cards' ou 'table'
 
 /**
  * Formata as labels de origem para exibição amigável
@@ -128,6 +129,37 @@ function setupFilters() {
         }
         exportLeadsToCSV(filteredLeads);
     });
+
+    const btnViewCards = document.getElementById('btn-view-cards');
+    const btnViewTable = document.getElementById('btn-view-table');
+
+    if (btnViewCards && btnViewTable) {
+        btnViewCards.addEventListener('click', () => {
+            currentViewMode = 'cards';
+            btnViewCards.classList.replace('text-slate-400', 'text-blue-600');
+            btnViewCards.classList.replace('hover:text-slate-600', 'bg-white');
+            btnViewCards.classList.add('shadow-sm');
+
+            btnViewTable.classList.replace('text-blue-600', 'text-slate-400');
+            btnViewTable.classList.replace('bg-white', 'hover:text-slate-600');
+            btnViewTable.classList.remove('shadow-sm');
+
+            renderLeads(filteredLeads);
+        });
+
+        btnViewTable.addEventListener('click', () => {
+            currentViewMode = 'table';
+            btnViewTable.classList.replace('text-slate-400', 'text-blue-600');
+            btnViewTable.classList.replace('hover:text-slate-600', 'bg-white');
+            btnViewTable.classList.add('shadow-sm');
+
+            btnViewCards.classList.replace('text-blue-600', 'text-slate-400');
+            btnViewCards.classList.replace('bg-white', 'hover:text-slate-600');
+            btnViewCards.classList.remove('shadow-sm');
+
+            renderLeads(filteredLeads);
+        });
+    }
 }
 
 /**
@@ -138,36 +170,39 @@ function renderLeads(leads) {
     if (!container) return;
 
     if (leads.length === 0) {
+        container.className = 'grid grid-cols-1';
         container.innerHTML = `<div class="col-span-full p-20 text-center text-slate-400 font-medium">Nenhum lead encontrado para os filtros aplicados.</div>`;
         return;
     }
 
-    container.innerHTML = leads.map(l => {
-        const date = new Date(l.created_at).toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+    if (currentViewMode === 'cards') {
+        container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+        container.innerHTML = leads.map(l => {
+            const date = new Date(l.created_at).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
 
-        const cleanPhone = (l.telefone || '').replace(/\D/g, '');
-        const nomeCliente = l.nome ? l.nome.split(' ')[0] : 'cliente';
-        const imovel = l.imovel_interesse || 'interesse geral';
-        const message = `Olá ${nomeCliente}! Recebemos seu contato pelo site sobre o imóvel "${imovel}" e gostaria de te ajudar.`;
-        const waLink = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+            const cleanPhone = (l.telefone || '').replace(/\D/g, '');
+            const nomeCliente = l.nome ? l.nome.split(' ')[0] : 'cliente';
+            const imovel = l.imovel_interesse || 'interesse geral';
+            const message = `Olá ${nomeCliente}! Recebemos seu contato pelo site sobre o imóvel "${imovel}" e gostaria de te ajudar.`;
+            const waLink = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
 
-        const lowerOrigin = (l.origem || '').toLowerCase();
-        let originClass = 'bg-slate-100 text-slate-700';
+            const lowerOrigin = (l.origem || '').toLowerCase();
+            let originClass = 'bg-slate-100 text-slate-700';
 
-        if (lowerOrigin === 'whatsapp') {
-            originClass = 'bg-emerald-100 text-emerald-700';
-        } else if (lowerOrigin === 'pagina') {
-            originClass = 'bg-blue-100 text-blue-700';
-        } else if (lowerOrigin.includes('footer')) {
-            originClass = 'bg-indigo-100 text-indigo-700';
-        }
+            if (lowerOrigin === 'whatsapp') {
+                originClass = 'bg-emerald-100 text-emerald-700';
+            } else if (lowerOrigin === 'pagina') {
+                originClass = 'bg-blue-100 text-blue-700';
+            } else if (lowerOrigin.includes('footer')) {
+                originClass = 'bg-indigo-100 text-indigo-700';
+            }
 
-        return `
+            return `
             <div class="bg-[#f8fafc] p-2 rounded-[2rem] border-2 border-slate-100 hover:border-slate-200 transition-all flex flex-col gap-2 animate-in fade-in slide-in-from-bottom-2 duration-300" id="lead-card-${l.id}">
                 
                 <div class="bg-white p-5 rounded-[1.5rem] shadow-sm flex justify-between items-center">
@@ -215,7 +250,87 @@ function renderLeads(leads) {
                 </div>
             </div>
         `;
-    }).join('');
+        }).join('');
+    } else {
+        container.className = 'block';
+
+        let rows = leads.map(l => {
+            const date = new Date(l.created_at).toLocaleDateString('pt-BR', {
+                day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+            });
+            const cleanPhone = (l.telefone || '').replace(/\D/g, '');
+            const nomeCliente = l.nome ? l.nome.split(' ')[0] : 'cliente';
+            const imovel = l.imovel_interesse || 'interesse geral';
+            const message = `Olá ${nomeCliente}! Recebemos seu contato pelo site sobre o imóvel "${imovel}" e gostaria de te ajudar.`;
+            const waLink = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+            const lowerOrigin = (l.origem || '').toLowerCase();
+            let originClass = 'bg-slate-100 text-slate-700';
+            if (lowerOrigin === 'whatsapp') originClass = 'bg-emerald-100 text-emerald-700';
+            else if (lowerOrigin === 'pagina') originClass = 'bg-blue-100 text-blue-700';
+            else if (lowerOrigin.includes('footer')) originClass = 'bg-indigo-100 text-indigo-700';
+
+            return `
+                <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
+                    <td class="py-4 px-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs">
+                                ${l.nome ? l.nome.charAt(0).toUpperCase() : '?'}
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-slate-800 text-sm">${l.nome || 'Cliente não identificado'}</span>
+                                <span class="text-[10px] text-slate-400 font-bold">${date}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6">
+                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest ${originClass} whitespace-nowrap">
+                            ${formatOriginLabel(l.origem)}
+                        </span>
+                    </td>
+                    <td class="py-4 px-6 text-sm font-bold text-slate-600 space-y-1">
+                        <div class="flex items-center gap-2"><span class="opacity-50">📞</span><span>${l.telefone || '-'}</span></div>
+                        ${lowerOrigin.includes('footer') && l.email ? `<div class="flex items-center gap-2"><span class="opacity-50">✉️</span><span class="truncate max-w-[150px]" title="${l.email}">${l.email}</span></div>` : ''}
+                    </td>
+                    <td class="py-4 px-6">
+                        <span class="text-xs font-bold text-slate-700 block truncate max-w-[180px]" title="${l.imovel_interesse || 'Geral'}">
+                            ${l.imovel_interesse || 'Geral'}
+                        </span>
+                    </td>
+                    <td class="py-4 px-6">
+                        <div class="flex items-center justify-end gap-3">
+                            <button onclick="deleteLead('${l.id}')" class="text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-all" title="Excluir Lead">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                            <a href="${waLink}" target="_blank" class="bg-emerald-500 text-white px-4 py-2 rounded-xl font-bold text-xs hover:bg-emerald-600 transition-all active:scale-95 flex items-center justify-center">
+                                WhatsApp
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        container.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[800px]">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-100 text-[10px] uppercase tracking-widest text-slate-400">
+                                <th class="py-4 px-6 font-black">Cliente & Data</th>
+                                <th class="py-4 px-6 font-black">Origem</th>
+                                <th class="py-4 px-6 font-black">Contato</th>
+                                <th class="py-4 px-6 font-black">Interesse</th>
+                                <th class="py-4 px-6 font-black text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rows}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
 }
 
 /**

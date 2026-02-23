@@ -615,6 +615,31 @@ function applySiteSettings(config) {
     const footerCopy = document.getElementById('footer-copyright-text');
     if (footerCopy) { footerCopy.innerText = config.footer_copyright || config.rodape_texto || `© ${new Date().getFullYear()} ${config.header_nome_site || 'ImobiRecife'}`; }
 
+    const fiscalContainer = document.getElementById('footer-fiscal-info');
+    if (fiscalContainer && (config.razao_social || config.cnpj || config.endereco_completo)) {
+        fiscalContainer.classList.remove('hidden');
+        const elRazao = document.getElementById('footer-razao-social');
+        if (elRazao) {
+            if (config.razao_social) { elRazao.innerText = config.razao_social; elRazao.style.display = ''; }
+            else { elRazao.style.display = 'none'; }
+        }
+        const elCnpj = document.getElementById('footer-cnpj');
+        if (elCnpj) {
+            if (config.cnpj) { elCnpj.innerText = "CNPJ: " + config.cnpj; elCnpj.style.display = ''; }
+            else { elCnpj.style.display = 'none'; }
+        }
+        const elEndere = document.getElementById('footer-endereco');
+        if (elEndere) {
+            if (config.endereco_completo) { elEndere.innerText = config.endereco_completo; elEndere.style.display = ''; }
+            else { elEndere.style.display = 'none'; }
+        }
+        const elSep = document.getElementById('footer-endereco-separator');
+        if (elSep) {
+            if (config.cnpj && config.endereco_completo) { elSep.classList.remove('hidden'); }
+            else { elSep.classList.add('hidden'); }
+        }
+    }
+
     // APLICAÇÃO DINÂMICA DO BOTÃO FLUTUANTE
     const waBtn = document.getElementById('whatsapp-floating-btn');
     if (waBtn) {

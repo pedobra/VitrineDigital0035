@@ -197,6 +197,9 @@ async function loadConfig() {
       document.getElementById('footer_tiktok_url').value = data.footer_tiktok_url || '';
       document.getElementById('footer_x_url').value = data.footer_x_url || '';
       document.getElementById('footer_linkedin_url').value = data.footer_linkedin_url || '';
+      document.getElementById('razao_social').value = data.razao_social || '';
+      document.getElementById('cnpj').value = data.cnpj || '';
+      document.getElementById('endereco_completo').value = data.endereco_completo || '';
       document.getElementById('footer_copyright').value = data.footer_copyright || data.rodape_texto || '';
     }
   } catch (err) {
@@ -241,6 +244,9 @@ document.getElementById('config-form').onsubmit = async (e) => {
       footer_tiktok_url: document.getElementById('footer_tiktok_url').value || null,
       footer_x_url: document.getElementById('footer_x_url').value || null,
       footer_linkedin_url: document.getElementById('footer_linkedin_url').value || null,
+      razao_social: document.getElementById('razao_social').value || null,
+      cnpj: document.getElementById('cnpj').value || null,
+      endereco_completo: document.getElementById('endereco_completo').value || null,
       footer_copyright: document.getElementById('footer_copyright').value || null,
 
       updated_at: new Date().toISOString()

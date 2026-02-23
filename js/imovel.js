@@ -28,19 +28,19 @@ const LABELS_GARANTIAS = {
  * Função única para geração de links do WhatsApp com suporte a variáveis e fallbacks.
  */
 function buildWhatsAppLink({ numero, mensagem }, imovel = {}) {
-  if (!numero) return null;
+    if (!numero) return null;
 
-  const cleanNumber = numero.replace(/\D/g, '');
-  if (cleanNumber.length < 8) return null;
+    const cleanNumber = numero.replace(/\D/g, '');
+    if (cleanNumber.length < 8) return null;
 
-  const texto = (mensagem || '')
-    .replace(/{{titulo}}/g, imovel.titulo || '')
-    .replace(/{{referencia}}/g, imovel.referencia || imovel.id || '')
-    .replace(/{{bairro}}/g, imovel.bairro || '')
-    .replace(/{{cidade}}/g, imovel.cidade || '')
-    .replace(/{{valor}}/g, '');
+    const texto = (mensagem || '')
+        .replace(/{{titulo}}/g, imovel.titulo || '')
+        .replace(/{{referencia}}/g, imovel.referencia || imovel.id || '')
+        .replace(/{{bairro}}/g, imovel.bairro || '')
+        .replace(/{{cidade}}/g, imovel.cidade || '')
+        .replace(/{{valor}}/g, '');
 
-  return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(texto)}`;
+    return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(texto)}`;
 }
 
 /**
@@ -52,7 +52,7 @@ function ensureArray(val) {
     if (typeof val === 'string') {
         try {
             if (val.startsWith('[') || val.startsWith('{')) return JSON.parse(val);
-        } catch (e) {}
+        } catch (e) { }
         return val.split(',').map(s => s.trim()).filter(Boolean);
     }
     return [];
@@ -110,7 +110,7 @@ function initLightbox() {
         const navigate = (dir) => {
             const imgEl = document.getElementById('lb-img');
             imgEl.classList.add('opacity-0', 'scale-95'); // Efeito de transição
-            
+
             setTimeout(() => {
                 currentIndex = (currentIndex + dir + currentPhotos.length) % currentPhotos.length;
                 updateLightboxContent();
@@ -122,10 +122,10 @@ function initLightbox() {
         modal.querySelector('#lb-close').onclick = (e) => { e.stopPropagation(); close(); };
         modal.querySelector('#lb-prev').onclick = (e) => { e.stopPropagation(); navigate(-1); };
         modal.querySelector('#lb-next').onclick = (e) => { e.stopPropagation(); navigate(1); };
-        
+
         // Fechar ao clicar fora da imagem ou no fundo
-        modal.onclick = (e) => { 
-            if(e.target.id === 'lightbox-modal' || e.target.tagName === 'DIV') close(); 
+        modal.onclick = (e) => {
+            if (e.target.id === 'lightbox-modal' || e.target.tagName === 'DIV') close();
         };
 
         // Teclado
@@ -141,11 +141,11 @@ function initLightbox() {
 function openLightbox(index) {
     const modal = document.getElementById('lightbox-modal');
     if (!modal) return;
-    
+
     currentIndex = index;
     const imgEl = document.getElementById('lb-img');
     imgEl.classList.remove('opacity-0', 'scale-95');
-    
+
     updateLightboxContent();
     modal.classList.remove('opacity-0', 'pointer-events-none');
     document.body.style.overflow = 'hidden';
@@ -176,7 +176,7 @@ async function iniciarPaginaImovel() {
         const { data: config } = await supabase.from('configuracoes_site').select('*').limit(1).maybeSingle();
         if (config) {
             if (config.color_scheme) applyColorScheme(resolveColorScheme(config.color_scheme));
-            
+
             // Task 1: Update Footer Copyright Dynamic Text
             const footerCopy = document.getElementById('footer-copyright-text');
             if (footerCopy) {
@@ -185,6 +185,31 @@ async function iniciarPaginaImovel() {
                     footerCopy.innerText = copyText;
                 } else {
                     footerCopy.style.display = 'none';
+                }
+            }
+
+            const fiscalContainer = document.getElementById('footer-fiscal-info');
+            if (fiscalContainer && (config.razao_social || config.cnpj || config.endereco_completo)) {
+                fiscalContainer.classList.remove('hidden');
+                const elRazao = document.getElementById('footer-razao-social');
+                if (elRazao) {
+                    if (config.razao_social) { elRazao.innerText = config.razao_social; elRazao.style.display = ''; }
+                    else { elRazao.style.display = 'none'; }
+                }
+                const elCnpj = document.getElementById('footer-cnpj');
+                if (elCnpj) {
+                    if (config.cnpj) { elCnpj.innerText = "CNPJ: " + config.cnpj; elCnpj.style.display = ''; }
+                    else { elCnpj.style.display = 'none'; }
+                }
+                const elEndere = document.getElementById('footer-endereco');
+                if (elEndere) {
+                    if (config.endereco_completo) { elEndere.innerText = config.endereco_completo; elEndere.style.display = ''; }
+                    else { elEndere.style.display = 'none'; }
+                }
+                const elSep = document.getElementById('footer-endereco-separator');
+                if (elSep) {
+                    if (config.cnpj && config.endereco_completo) { elSep.classList.remove('hidden'); }
+                    else { elSep.classList.add('hidden'); }
                 }
             }
 
@@ -229,11 +254,11 @@ function renderizarImovel(p, config) {
 
     const caracImovel = ensureArray(p.caracteristicas_imovel);
     const caracCondo = ensureArray(p.caracteristicas_condominio);
-    
+
     // Processamento de Negociação e Garantias
     const negopay = ensureArray(p.opcoes_pagamento);
     const garantiasArray = ensureArray(p.garantias_locacao);
-    
+
     // Suporte a campos booleanos explícitos
     if (p.fiador && !garantiasArray.includes('fiador')) garantiasArray.push('fiador');
     if (p.deposito_caucao && !garantiasArray.includes('caucao')) garantiasArray.push('caucao');
