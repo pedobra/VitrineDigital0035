@@ -216,7 +216,7 @@ function renderCardList(imoveis, fotos) {
                     <div class="absolute top-5 left-5 flex flex-col gap-2 z-10">
                         <span class="bg-white/95 backdrop-blur text-slate-900 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">${imovel.tipo_imovel || 'Imóvel'}</span>
                     </div>
-                    <span class="absolute top-5 right-5 bg-slate-900/80 backdrop-blur text-white px-3 py-1.5 rounded-lg text-[9px] font-bold tracking-widest uppercase z-10 border border-white/20">REF: ${referencia}</span>
+                    <span class="absolute top-5 right-5 bg-blue-600/90 backdrop-blur text-white px-3 py-1.5 rounded-lg text-[9px] font-bold tracking-widest uppercase z-10 border border-white/20">REF: ${referencia}</span>
                     ${imovel.destaque ? '<div class="absolute bottom-5 left-5 bg-amber-400 text-slate-900 font-black text-[10px] px-4 py-2 rounded-full shadow-lg z-10 tracking-widest uppercase animate-pulse">Destaque</div>' : ''}
                 </div>
                 <div class="p-8 flex flex-col flex-grow">
