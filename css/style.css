@@ -194,7 +194,9 @@ nav.sticky,
 @media (max-width: 768px) {
     .hero-home {
         min-height: 550px;
-        background-image: var(--hero-bg-mobile, var(--hero-bg-desktop));
+        background-image: none !important;
+        background-color: #475569;
+        /* Cinza médio/escuro */
         background-position: center top;
     }
 }
