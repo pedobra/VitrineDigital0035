@@ -30,7 +30,7 @@ function setupMasks() {
         }
     });
 
-    // Delegar mudança de Estado Civil para mostrar Cônjuge
+    // Delegated Change Listeners
     document.addEventListener('change', (e) => {
         if (e.target.name === 'estado_civil') {
             const val = e.target.value;
@@ -43,20 +43,85 @@ function setupMasks() {
         }
     });
 
-    // Mascara simples para celular
-    document.getElementById('f-celular').addEventListener('input', (e) => {
-        let v = e.target.value.replace(/\D/g, '');
-        v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
-        v = v.replace(/(\d{5})(\d)/, "$1-$2");
-        e.target.value = v.slice(0, 15);
+    // Delegated Input Masks (Generic for Dynamic Fields)
+    document.addEventListener('input', (e) => {
+        const target = e.target;
+
+        // Celular / Telefone Mask
+        if (target.id === 'f-celular' || target.classList.contains('rep-fone') || target.id === 'f-pj-telefone' || target.id === 'f-pj-telefone-for') {
+            let v = target.value.replace(/\D/g, '');
+            v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+            v = v.replace(/(\d{5})(\d)/, "$1-$2");
+            target.value = v.slice(0, 15);
+        }
+
+        // CPF Only Mask (for representatives and spouse)
+        if (target.classList.contains('rep-cpf') || target.id === 'f-c-cpf') {
+            let v = target.value.replace(/\D/g, '');
+            v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4');
+            target.value = v.slice(0, 14);
+        }
+
+        // CEP Mask
+        if (target.id === 'f-cep' || target.id === 'f-pj-cep') {
+            let v = target.value.replace(/\D/g, '');
+            v = v.replace(/^(\d{5})(\d)/, "$1-$2");
+            target.value = v.slice(0, 9);
+        }
     });
 }
+
+// PJ Representantes Logic
+function addRepresentanteField(data = {}) {
+    const container = document.getElementById('container-representantes');
+    const index = container.children.length + 1;
+    const div = document.createElement('div');
+    div.className = "bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6 relative";
+    div.innerHTML = `
+        <button type="button" class="absolute top-6 right-6 text-red-400 hover:text-red-600 remove-rep">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="md:col-span-3">
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Representante ${index} - Nome Completo</label>
+                <input type="text" class="rep-nome w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none font-bold" value="${data.nome || ''}">
+            </div>
+            <div>
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">CPF</label>
+                <input type="text" class="rep-cpf w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none" value="${data.cpf || ''}">
+            </div>
+            <div>
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Identidade (RG)</label>
+                <input type="text" class="rep-rg w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none" value="${data.rg || ''}">
+            </div>
+            <div>
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Data Nasc.</label>
+                <input type="date" class="rep-nasc w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none" value="${data.nascimento || ''}">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Ligação com Empresa</label>
+                <div class="flex gap-4 mt-2">
+                    <label class="flex items-center gap-2 text-sm font-bold"><input type="radio" name="rep_lig_${index}" value="Sócio" ${data.ligacao === 'Sócio' ? 'checked' : ''}> Sócio</label>
+                    <label class="flex items-center gap-2 text-sm font-bold"><input type="radio" name="rep_lig_${index}" value="Procurador" ${data.ligacao === 'Procurador' ? 'checked' : ''}> Procurador</label>
+                </div>
+            </div>
+        </div>
+    `;
+
+    div.querySelector('.remove-rep').onclick = () => div.remove();
+    container.appendChild(div);
+}
+
+document.getElementById('btn-add-representante').onclick = () => addRepresentanteField();
 
 function liberarCampos(tipo) {
     const detalhados = document.getElementById('campos-detalhados');
     const sessaoPF = document.getElementById('sessao-pf');
     const sessaoPJ = document.getElementById('sessao-pj');
     const sessaoProf = document.getElementById('sessao-profissional');
+    const sessaoPJRep = document.getElementById('sessao-pj-representantes');
+    const sessaoRef = document.getElementById('sessao-referencias');
+    const sessaoBens = document.getElementById('sessao-bens');
 
     detalhados.classList.remove('hidden');
 
@@ -64,10 +129,16 @@ function liberarCampos(tipo) {
         sessaoPF.classList.remove('hidden');
         sessaoProf.classList.remove('hidden');
         sessaoPJ.classList.add('hidden');
+        sessaoPJRep.classList.add('hidden');
+        sessaoRef.classList.remove('hidden'); // PF também tem referências e bens na ficha completa
+        sessaoBens.classList.remove('hidden');
     } else {
         sessaoPF.classList.add('hidden');
         sessaoProf.classList.add('hidden');
         sessaoPJ.classList.remove('hidden');
+        sessaoPJRep.classList.remove('hidden');
+        sessaoRef.classList.remove('hidden');
+        sessaoBens.classList.remove('hidden');
         document.getElementById('sessao-conjuge').classList.add('hidden');
     }
 }
@@ -111,6 +182,7 @@ function renderClientes() {
 document.getElementById('btn-novo-cliente').onclick = () => {
     editingId = null;
     document.getElementById('form-cliente').reset();
+    document.getElementById('container-representantes').innerHTML = '';
     document.getElementById('campos-detalhados').classList.add('hidden');
     document.getElementById('sessao-conjuge').classList.add('hidden');
     document.getElementById('modal-title').innerText = "Novo Cadastro";
@@ -145,6 +217,26 @@ document.getElementById('form-cliente').onsubmit = async (e) => {
         email: document.getElementById('f-email').value,
         telefone_celular: document.getElementById('f-celular').value,
         updated_at: new Date().toISOString()
+    };
+
+    // Referências e Bens (Geral para ambos ou PJ conforme solicitado)
+    payload.referencias = {
+        pessoais: [
+            { nome: document.getElementById('ref-p1-nome').value, relacao: document.getElementById('ref-p1-relacao').value, fone: document.getElementById('ref-p1-fone').value },
+            { nome: document.getElementById('ref-p2-nome').value, relacao: document.getElementById('ref-p2-relacao').value, fone: document.getElementById('ref-p2-fone').value }
+        ],
+        bancarias: {
+            tipo: getRadioValue('ref_banco_tipo'),
+            banco: document.getElementById('ref-b-banco').value,
+            agencia: document.getElementById('ref-b-agencia').value,
+            conta: document.getElementById('ref-b-conta').value,
+            gerente: document.getElementById('ref-b-gerente').value
+        }
+    };
+
+    payload.bens = {
+        imovel1: { endereco: document.getElementById('ben-i1-end').value, valor: document.getElementById('ben-i1-val').value, detalhes: document.getElementById('ben-i1-mat').value },
+        veiculo1: { marca: document.getElementById('ben-v1-marca').value, ano: document.getElementById('ben-v1-ano').value, placa: document.getElementById('ben-v1-placa').value, financiado: getRadioValue('v1_fin') }
     };
 
     if (tipo === 'PF') {
@@ -184,7 +276,7 @@ document.getElementById('form-cliente').onsubmit = async (e) => {
         }
 
         // Profissional
-        payload.prof_atividade = document.getElementById('f-p-profissao').value; // Usando campo prof_atividade da migration
+        payload.prof_atividade = document.getElementById('f-p-profissao').value;
         payload.prof_empresa = document.getElementById('f-p-empresa').value;
         payload.prof_cnpj = document.getElementById('f-p-cnpj').value;
         payload.prof_cargo = document.getElementById('f-p-cargo').value;
@@ -197,6 +289,36 @@ document.getElementById('form-cliente').onsubmit = async (e) => {
         payload.inscricao_estadual = document.getElementById('f-ie').value;
         payload.data_fundacao = document.getElementById('f-fundacao').value || null;
         payload.faturamento_mensal = document.getElementById('f-faturamento').value || 0;
+
+        // Print 1 Extras
+        payload.logradouro = document.getElementById('f-pj-logradouro').value;
+        payload.bairro = document.getElementById('f-pj-bairro').value;
+        payload.cidade = document.getElementById('f-pj-cidade-uf').value;
+        payload.cep = document.getElementById('f-pj-cep').value;
+        payload.pj_contato = document.getElementById('f-pj-contato').value;
+        payload.pj_telefone = document.getElementById('f-pj-telefone').value;
+        payload.pj_fax = document.getElementById('f-pj-fax').value;
+        payload.pj_contato_fortaleza = document.getElementById('f-pj-contato-for').value;
+        payload.pj_telefone_fortaleza = document.getElementById('f-pj-telefone-for').value;
+        payload.pj_fax_fortaleza = document.getElementById('f-pj-fax-for').value;
+        payload.email = document.getElementById('f-pj-email').value;
+        payload.pj_outras_rendas = document.getElementById('f-pj-outras-rendas').value || 0;
+        payload.pj_origem_rendas = document.getElementById('f-pj-origem').value;
+        payload.pj_predio_tipo = getRadioValue('pj_predio');
+        payload.pj_predio_valor = document.getElementById('f-pj-predio-valor').value || 0;
+
+        // Representantes
+        const reps = [];
+        document.querySelectorAll('#container-representantes > div').forEach((div, i) => {
+            reps.push({
+                nome: div.querySelector('.rep-nome').value,
+                cpf: div.querySelector('.rep-cpf').value,
+                rg: div.querySelector('.rep-rg').value,
+                nascimento: div.querySelector('.rep-nasc').value,
+                ligacao: getRadioValue(`rep_lig_${i + 1}`)
+            });
+        });
+        payload.pj_representantes = reps;
     }
 
     try {
@@ -224,10 +346,46 @@ window.editCliente = (id) => {
 
     editingId = id;
     document.getElementById('form-cliente').reset();
+    document.getElementById('container-representantes').innerHTML = '';
     document.getElementById('modal-title').innerText = "Editar Cliente";
     document.getElementById('f-documento').value = c.documento;
 
     liberarCampos(c.tipo_pessoa);
+
+    // Populate Refs/Bens
+    if (c.referencias) {
+        if (c.referencias.pessoais[0]) {
+            document.getElementById('ref-p1-nome').value = c.referencias.pessoais[0].nome || '';
+            document.getElementById('ref-p1-relacao').value = c.referencias.pessoais[0].relacao || '';
+            document.getElementById('ref-p1-fone').value = c.referencias.pessoais[0].fone || '';
+        }
+        if (c.referencias.pessoais[1]) {
+            document.getElementById('ref-p2-nome').value = c.referencias.pessoais[1].nome || '';
+            document.getElementById('ref-p2-relacao').value = c.referencias.pessoais[1].relacao || '';
+            document.getElementById('ref-p2-fone').value = c.referencias.pessoais[1].fone || '';
+        }
+        if (c.referencias.bancarias) {
+            setRadioValue('ref_banco_tipo', c.referencias.bancarias.tipo);
+            document.getElementById('ref-b-banco').value = c.referencias.bancarias.banco || '';
+            document.getElementById('ref-b-agencia').value = c.referencias.bancarias.agencia || '';
+            document.getElementById('ref-b-conta').value = c.referencias.bancarias.conta || '';
+            document.getElementById('ref-b-gerente').value = c.referencias.bancarias.gerente || '';
+        }
+    }
+
+    if (c.bens) {
+        if (c.bens.imovel1) {
+            document.getElementById('ben-i1-end').value = c.bens.imovel1.endereco || '';
+            document.getElementById('ben-i1-val').value = c.bens.imovel1.valor || '';
+            document.getElementById('ben-i1-mat').value = c.bens.imovel1.detalhes || '';
+        }
+        if (c.bens.veiculo1) {
+            document.getElementById('ben-v1-marca').value = c.bens.veiculo1.marca || '';
+            document.getElementById('ben-v1-ano').value = c.bens.veiculo1.ano || '';
+            document.getElementById('ben-v1-placa').value = c.bens.veiculo1.placa || '';
+            setRadioValue('v1_fin', c.bens.veiculo1.financiado);
+        }
+    }
 
     document.getElementById('f-email').value = c.email || '';
     document.getElementById('f-celular').value = c.telefone_celular || '';
@@ -279,6 +437,26 @@ window.editCliente = (id) => {
         document.getElementById('f-ie').value = c.inscricao_estadual || '';
         document.getElementById('f-fundacao').value = c.data_fundacao || '';
         document.getElementById('f-faturamento').value = c.faturamento_mensal || '';
+
+        document.getElementById('f-pj-logradouro').value = c.logradouro || '';
+        document.getElementById('f-pj-bairro').value = c.bairro || '';
+        document.getElementById('f-pj-cidade-uf').value = c.cidade || '';
+        document.getElementById('f-pj-cep').value = c.cep || '';
+        document.getElementById('f-pj-contato').value = c.pj_contato || '';
+        document.getElementById('f-pj-telefone').value = c.pj_telefone || '';
+        document.getElementById('f-pj-fax').value = c.pj_fax || '';
+        document.getElementById('f-pj-contato-for').value = c.pj_contato_fortaleza || '';
+        document.getElementById('f-pj-telefone-for').value = c.pj_telefone_fortaleza || '';
+        document.getElementById('f-pj-fax-for').value = c.pj_fax_fortaleza || '';
+        document.getElementById('f-pj-email').value = c.email || '';
+        document.getElementById('f-pj-outras-rendas').value = c.pj_outras_rendas || '';
+        document.getElementById('f-pj-origem').value = c.pj_origem_rendas || '';
+        setRadioValue('pj_predio', c.pj_predio_tipo);
+        document.getElementById('f-pj-predio-valor').value = c.pj_predio_valor || '';
+
+        if (c.pj_representantes && Array.isArray(c.pj_representantes)) {
+            c.pj_representantes.forEach(rep => addRepresentanteField(rep));
+        }
     }
 
     document.getElementById('modal-cliente').classList.remove('hidden');
