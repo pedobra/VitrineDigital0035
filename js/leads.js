@@ -190,6 +190,12 @@ function renderLeads(leads) {
                             <span class="opacity-50">📞</span>
                             <span class="font-semibold">${l.telefone || 'Não informado'}</span>
                         </div>
+                        ${lowerOrigin.includes('footer') && l.email ? `
+                        <div class="flex items-center gap-2 text-slate-600 text-sm mt-1">
+                            <span class="opacity-50">✉️</span>
+                            <span class="font-semibold truncate" title="${l.email}">${l.email}</span>
+                        </div>
+                        ` : ''}
                         <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 mt-2">
                             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Interesse</p>
                             <p class="text-xs font-bold text-slate-700 truncate">${l.imovel_interesse || 'Geral'}</p>
