@@ -56,13 +56,33 @@
                 <h1 class="text-3xl font-bold text-slate-900">Gestão de Imóveis</h1>
                 <p class="text-slate-500 text-sm">Visualize e controle seu catálogo de propriedades.</p>
             </div>
-            <a href="imovel-form.html"
-                class="w-full md:w-auto bg-blue-600 text-white px-6 py-4 md:py-3 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 active:scale-95 flex items-center justify-center gap-2">
-                <span>+ Novo Imóvel</span>
-            </a>
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <!-- View Toggle Group (Mobile Only) -->
+                <div class="md:hidden bg-slate-100 rounded-xl p-1 flex items-center shrink-0">
+                    <button id="btn-view-table" class="p-3 bg-white rounded-lg shadow-sm text-blue-600 transition-all"
+                        title="Ver em Tabela">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
+                        </svg>
+                    </button>
+                    <button id="btn-view-cards"
+                        class="p-3 rounded-lg text-slate-400 hover:text-slate-600 transition-all" title="Ver em Cards">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <a href="imovel-form.html"
+                    class="flex-1 md:flex-none bg-blue-600 text-white px-6 py-4 md:py-3 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 active:scale-95 flex items-center justify-center gap-2">
+                    <span>+ Novo Imóvel</span>
+                </a>
+            </div>
         </header>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden responsive-table">
+        <!-- Table Container (Always visible on desktop, toggleable on mobile) -->
+        <div id="view-table-container"
+            class="block md:block bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden responsive-table">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-slate-50 border-b border-slate-100">
@@ -85,7 +105,10 @@
             </div>
         </div>
 
-
+        <!-- Cards Container (Hidden on desktop, toggleable on mobile) -->
+        <div id="view-cards-container" class="hidden md:hidden grid-cols-1 gap-4">
+            <div class="p-10 text-center text-slate-400">Carregando catálogo...</div>
+        </div>
     </main>
 
     <script type="module" src="js/auth.js"></script>

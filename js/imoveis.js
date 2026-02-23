@@ -31,7 +31,8 @@ async function loadProperties() {
  */
 function renderProperties(properties) {
     const tableBody = document.getElementById('properties-table-body');
-    if (!tableBody) return;
+    const mobileCards = document.getElementById('view-cards-container');
+    if (!tableBody || !mobileCards) return;
 
     if (properties.length === 0) {
         const emptyState = `
@@ -40,6 +41,7 @@ function renderProperties(properties) {
             </div>
         `;
         tableBody.innerHTML = `<tr><td colspan="5">${emptyState}</td></tr>`;
+        mobileCards.innerHTML = emptyState;
         return;
     }
 
@@ -81,6 +83,57 @@ function renderProperties(properties) {
                     </div>
                 </td>
             </tr>
+        `;
+    }).join('');
+
+    // Render Cards (Mobile)
+    mobileCards.innerHTML = properties.map(p => {
+        const preco = p.valor_venda || p.valor_locacao || 0;
+        const priceFormatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(preco);
+        const statusClass = p.ativo ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500';
+        const statusLabel = p.ativo ? (p.status_imovel || 'Ativo') : 'Inativo';
+        const featuredBadge = p.destaque ? `<span class="inline-flex items-center gap-1 bg-amber-100 text-amber-700 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter shadow-sm">⭐ Destaque</span>` : '';
+        const refText = p.referencia || `#${p.id.toString().slice(-4)}`;
+
+        // Imagem representativa (fallback se não houver foto)
+        let firstImg = 'https://placehold.co/600x400/slate-100/slate-400?text=Sem+Foto';
+        if (p.fotos && p.fotos.length > 0) {
+            try {
+                const f = JSON.parse(p.fotos);
+                if (Array.isArray(f) && f[0]) firstImg = f[0];
+            } catch (e) { }
+        }
+
+        return `
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col group ${p.destaque ? 'ring-2 ring-amber-100' : ''}">
+                <div class="h-48 w-full bg-slate-100 relative">
+                    <img src="${firstImg}" class="w-full h-full object-cover object-center" alt="${p.titulo}">
+                    <div class="absolute top-3 left-3">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold shadow bg-white/90 backdrop-blur ${statusClass}">${statusLabel}</span>
+                    </div>
+                    ${p.destaque ? `<div class="absolute top-3 right-3 shadow">${featuredBadge}</div>` : ''}
+                </div>
+                <div class="p-5 flex flex-col flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-mono text-slate-400 bg-slate-50 px-2 py-1 rounded">${refText}</span>
+                    </div>
+                    <h3 class="font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2 mb-4 leading-tight">${p.titulo}</h3>
+                    <div class="mt-auto flex items-center justify-between">
+                        <span class="text-lg font-black text-slate-900">${priceFormatted}</span>
+                        <div class="flex gap-2">
+                            <button onclick="window.location.href='imovel-form.html?id=${p.id}'" class="p-2 text-slate-400 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 rounded-lg transition-colors" title="Editar">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            </button>
+                            <button data-id="${p.id}" class="btn-duplicate-imovel p-2 text-slate-400 hover:text-emerald-600 bg-slate-50 hover:bg-emerald-50 rounded-lg transition-colors" title="Duplicar">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
+                            </button>
+                            <button data-id="${p.id}" class="btn-delete p-2 text-red-300 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors" title="Excluir">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         `;
     }).join('');
 
@@ -170,4 +223,46 @@ function setupTableActions() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', loadProperties);
+document.addEventListener('DOMContentLoaded', () => {
+    loadProperties();
+
+    // Setup Mobile View Toggles
+    const btnViewCards = document.getElementById('btn-view-cards');
+    const btnViewTable = document.getElementById('btn-view-table');
+    const tableContainer = document.getElementById('view-table-container');
+    const cardsContainer = document.getElementById('view-cards-container');
+
+    if (btnViewCards && btnViewTable && tableContainer && cardsContainer) {
+        btnViewCards.addEventListener('click', () => {
+            // Ativar Cards
+            btnViewCards.classList.replace('text-slate-400', 'text-blue-600');
+            btnViewCards.classList.replace('hover:text-slate-600', 'bg-white');
+            btnViewCards.classList.add('shadow-sm');
+
+            // Desativar Table
+            btnViewTable.classList.replace('text-blue-600', 'text-slate-400');
+            btnViewTable.classList.replace('bg-white', 'hover:text-slate-600');
+            btnViewTable.classList.remove('shadow-sm');
+
+            // Switch Containers (preservando md:block e md:hidden do CSS nativo)
+            tableContainer.classList.replace('block', 'hidden');
+            cardsContainer.classList.replace('hidden', 'grid');
+        });
+
+        btnViewTable.addEventListener('click', () => {
+            // Ativar Table
+            btnViewTable.classList.replace('text-slate-400', 'text-blue-600');
+            btnViewTable.classList.replace('hover:text-slate-600', 'bg-white');
+            btnViewTable.classList.add('shadow-sm');
+
+            // Desativar Cards
+            btnViewCards.classList.replace('text-blue-600', 'text-slate-400');
+            btnViewCards.classList.replace('bg-white', 'hover:text-slate-600');
+            btnViewCards.classList.remove('shadow-sm');
+
+            // Switch Containers
+            tableContainer.classList.replace('hidden', 'block');
+            cardsContainer.classList.replace('grid', 'hidden');
+        });
+    }
+});
