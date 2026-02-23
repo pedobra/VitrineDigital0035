@@ -98,17 +98,17 @@ function renderRecentLeads(leads) {
         const initial = l.nome ? l.nome.charAt(0).toUpperCase() : '?';
 
         return `
-            <div class="flex items-center justify-between p-4 hover:bg-slate-50 rounded-xl transition border border-transparent hover:border-slate-100 group">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-slate-50 rounded-xl transition border border-transparent hover:border-slate-100 group gap-4 sm:gap-0">
+                <div class="flex items-center gap-4 min-w-0">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-sm">
                         ${initial}
                     </div>
-                    <div>
-                        <p class="font-bold text-slate-900 text-sm">${l.nome || 'Cliente sem nome'}</p>
-                        <p class="text-xs text-slate-500">${l.imovel_interesse || 'Interesse Geral'}</p>
+                    <div class="min-w-0">
+                        <p class="font-bold text-slate-900 text-sm truncate" title="${l.nome || 'Cliente sem nome'}">${l.nome || 'Cliente sem nome'}</p>
+                        <p class="text-xs text-slate-500 truncate" title="${l.imovel_interesse || 'Interesse Geral'}">${l.imovel_interesse || 'Interesse Geral'}</p>
                     </div>
                 </div>
-                <div class="text-right">
+                <div class="text-left sm:text-right flex-shrink-0">
                     <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-500 mb-1">
                         ${l.origem || 'N/A'}
                     </span>
