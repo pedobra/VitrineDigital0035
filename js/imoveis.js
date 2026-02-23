@@ -156,19 +156,20 @@ function setupTableActions() {
             const { data: fotos } = await supabase.from('imoveis_fotos').select('url').eq('imovel_id', id);
             if (fotos && fotos.length > 0) {
                 const pathsToRemove = fotos.map(f => {
-                    if (f.url && f.url.includes('/public/imoveis/')) return f.url.split('/public/imoveis/')[1];
+                    if (f.url && f.url.includes('/public/imoveis/')) return decodeURIComponent(f.url.split('/public/imoveis/')[1]);
                     return null;
                 }).filter(p => p !== null);
 
                 if (pathsToRemove.length > 0) {
-                    await supabase.storage.from('imoveis').remove(pathsToRemove);
+                    const { error: storageError } = await supabase.storage.from('imoveis').remove(pathsToRemove);
+                    if (storageError) console.error('Erro ao deletar fotos do storage:', storageError);
                 }
             }
 
             // 2. Remover do banco de dados
-            const { error } = await supabase.from('imoveis').delete().eq('id', id);
-            if (!error) loadProperties();
-            else alert('Erro: ' + error.message);
+            const { error: dbError } = await supabase.from('imoveis').delete().eq('id', id);
+            if (!dbError) loadProperties();
+            else alert('Erro: ' + dbError.message);
         };
     });
 }
