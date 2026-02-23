@@ -2,12 +2,31 @@ import { supabase } from './supabase.js';
 
 let clientes = [];
 let editingId = null;
+let globalConfig = null;
+
+async function loadGlobalConfig() {
+    const { data } = await supabase.from('configuracoes_site').select('*').maybeSingle();
+    globalConfig = data;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     loadClientes();
+    loadGlobalConfig();
     setupMasks();
     setupFilters();
     setupBulkActions();
+
+    // Close Modals
+    document.getElementById('btn-close-modal').onclick = () => {
+        document.getElementById('modal-cliente').classList.add('hidden');
+    };
+
+    document.getElementById('btn-close-view').onclick = () => {
+        document.getElementById('modal-view-cliente').classList.add('hidden');
+    };
+
+    // PDF Export
+    document.getElementById('btn-export-pdf').onclick = generatePDF;
 });
 
 // Mascaramento Automático CPF/CNPJ
@@ -222,21 +241,21 @@ function renderClientes() {
     });
 
     body.innerHTML = filtered.map(c => `
-        <tr class="group hover:bg-blue-50/30 transition-all cursor-pointer border-b border-slate-50">
+        <tr class="group hover:bg-blue-50/20 transition-all cursor-pointer border-b border-slate-50" onclick="viewCliente('${c.id}')">
             <td class="px-6 py-4" onclick="event.stopPropagation()">
                 <input type="checkbox" value="${c.id}" class="client-check w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" onchange="toggleBulkActions()">
             </td>
-            <td class="px-6 py-4 font-mono text-xs text-blue-600 font-bold" onclick="editCliente('${c.id}')">${c.documento}</td>
-            <td class="px-6 py-4" onclick="editCliente('${c.id}')">
+            <td class="px-6 py-4 font-mono text-xs text-blue-600 font-bold">${c.documento}</td>
+            <td class="px-6 py-4">
                 <div class="text-sm font-black text-slate-900 group-hover:text-blue-700 transition-colors uppercase">${c.nome_razao_social}</div>
                 <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">${c.email || ''}</div>
             </td>
-            <td class="px-6 py-4" onclick="editCliente('${c.id}')">
+            <td class="px-6 py-4">
                 <span class="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${c.tipo_pessoa === 'PF' ? 'bg-amber-50 text-amber-600 border border-amber-100' : 'bg-blue-50 text-blue-600 border border-blue-100'}">
                     ${c.tipo_pessoa === 'PF' ? 'PF' : 'PJ'}
                 </span>
             </td>
-            <td class="px-6 py-4 text-xs text-slate-500 font-bold hidden md:table-cell" onclick="editCliente('${c.id}')">${c.telefone_celular || '--'}</td>
+            <td class="px-6 py-4 text-xs text-slate-500 font-bold hidden md:table-cell">${c.telefone_celular || '--'}</td>
             <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">
                 <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button onclick="editCliente('${c.id}')" class="p-2.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all" title="Editar">
@@ -549,3 +568,173 @@ window.editCliente = (id) => {
 
     document.getElementById('modal-cliente').classList.remove('hidden');
 };
+
+// VISUALIZAÇÃO E PDF
+window.viewCliente = async (id) => {
+    const c = clientes.find(item => item.id === id);
+    if (!c) return;
+
+    const modal = document.getElementById('modal-view-cliente');
+    const pdfTitle = document.getElementById('pdf-title');
+    const pdfBody = document.getElementById('pdf-body');
+    const logo = document.getElementById('pdf-logo');
+    const spacer = document.getElementById('pdf-logo-spacer');
+
+    // Branding Config
+    if (globalConfig?.logo_header) {
+        logo.src = globalConfig.logo_header;
+        logo.classList.remove('hidden');
+        spacer.classList.add('hidden');
+    } else {
+        logo.classList.add('hidden');
+        spacer.classList.remove('hidden');
+    }
+
+    document.getElementById('footer-razao').innerText = globalConfig?.razao_social || '';
+    document.getElementById('footer-endereco').innerText = globalConfig?.endereco_completo || '';
+    document.getElementById('footer-cnpj').innerText = globalConfig?.cnpj || '';
+
+    pdfTitle.innerText = c.tipo_pessoa === 'PF' ? 'FICHA CADASTRAL - PESSOA FÍSICA' : 'FICHA CADASTRAL - PESSOA JURÍDICA';
+
+    let html = '';
+    const row = (label, value) => `
+        <div class="flex flex-col gap-1">
+            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">${label}</span>
+            <span class="text-sm font-bold text-slate-900 border-b border-slate-50 pb-1 min-h-[1.5rem]">${value || '--'}</span>
+        </div>
+    `;
+
+    const section = (title, content, colorClass = 'blue') => `
+        <div class="rounded-3xl border-2 border-slate-100 p-8 space-y-6 break-inside-avoid shadow-sm mb-6">
+            <h3 class="text-xs font-black text-${colorClass}-600 uppercase tracking-widest flex items-center gap-2">
+                <span class="w-1.5 h-4 bg-${colorClass}-600 rounded-full"></span>
+                ${title}
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                ${content}
+            </div>
+        </div>
+    `;
+
+    if (c.tipo_pessoa === 'PF') {
+        let pessoal = row('Nome', c.nome_razao_social);
+        pessoal += row('CPF', c.documento);
+        pessoal += row('RG', c.rg);
+        pessoal += row('Orgão', c.orgao_expedidor);
+        pessoal += row('Data Nasc', c.data_nascimento);
+        pessoal += row('Sexo', c.sexo);
+        pessoal += row('Est. Civil', c.estado_civil);
+        pessoal += row('Nacionalidade', c.nacionalidade);
+        pessoal += row('Naturalidade', c.naturalidade_uf);
+        pessoal += row('Instrução', c.grau_instrucao);
+        pessoal += row('Filiação', c.filiacao);
+        html += section('Identificação Pessoal', pessoal);
+
+        let contato = row('E-mail', c.email);
+        contato += row('Fone Fixo', c.telefone_fixo);
+        contato += row('Celular', c.telefone_celular);
+        contato += row('Endereço', c.logradouro);
+        contato += row('Bairro', c.bairro);
+        contato += row('Cidade', c.cidade);
+        contato += row('UF', c.uf);
+        contato += row('CEP', c.cep);
+        contato += row('Residência', (c.residenca_tipo || '--') + (c.residenca_valor_aluguel ? ` (R$ ${c.residenca_valor_aluguel})` : ''));
+        contato += row('Tempo Reside', c.tempo_reside);
+        contato += row('Dependentes', c.num_dependentes);
+        html += section('Contato e Localização', contato);
+
+        if (c.estado_civil === 'Casado' || c.estado_civil === 'União Estável') {
+            let conjuge = row('Nome Cônjuge', c.conjuge_nome);
+            conjuge += row('CPF Cônjuge', c.conjuge_cpf);
+            conjuge += row('RG Cônjuge', c.conjuge_identidade);
+            conjuge += row('Nasc. Cônjuge', c.conjuge_data_nascimento);
+            conjuge += row('Profissão', c.conjuge_profissao);
+            conjuge += row('Empresa', c.conjuge_empresa);
+            conjuge += row('Renda', c.conjuge_renda);
+            html += section('Dados do Cônjuge', conjuge, 'blue');
+        }
+
+        let prof = row('Profissão', c.prof_atividade);
+        prof += row('Empresa', c.prof_empresa);
+        prof += row('Cargo', c.prof_cargo);
+        prof += row('Admissão', c.prof_data_admissao);
+        prof += row('Renda Mensal', c.prof_renda);
+        prof += row('CNPJ Empresa', c.prof_cnpj);
+        html += section('Atividade Profissional', prof, 'slate');
+    } else {
+        let pj = row('Razão Social', c.nome_razao_social);
+        pj += row('CNPJ', c.documento);
+        pj += row('Nome Fantasia', c.nome_fantasia);
+        pj += row('Insc. Estadual', c.inscricao_estadual);
+        pj += row('Fundação', c.data_fundacao);
+        pj += row('Faturamento', c.faturamento_mensal);
+        pj += row('E-mail', c.email);
+        html += section('Dados da Empresa (PJ)', pj);
+
+        let loc = row('Sede', c.logradouro); // Note: for PJ, logradouro is shared
+        loc += row('Bairro', c.bairro);
+        loc += row('Cidade', c.cidade);
+        loc += row('CEP', c.cep);
+        loc += row('Contato', c.pj_contato);
+        loc += row('Telefone', c.pj_telefone);
+        loc += row('Fax', c.pj_fax);
+        html += section('Localização e Contato PJ', loc);
+
+        if (c.pj_representantes?.length > 0) {
+            c.pj_representantes.forEach((r, idx) => {
+                let rep = row('Nome', r.nome);
+                rep += row('CPF', r.cpf);
+                rep += row('RG', r.rg);
+                rep += row('Nasc', r.nascimento);
+                rep += row('Ligação', r.vinculo);
+                html += section(`Representante Legal ${idx + 1}`, rep, 'blue');
+            });
+        }
+    }
+
+    if (c.referencias) {
+        let refs = '';
+        if (c.referencias.pessoais) {
+            c.referencias.pessoais.forEach((rp, i) => {
+                if (rp.nome) refs += row(`Ref Pessoal ${i + 1}`, `${rp.nome} (${rp.relacao || ''}) - ${rp.fone || ''}`);
+            });
+        }
+        if (c.referencias.bancaria) {
+            const rb = c.referencias.bancaria;
+            if (rb.banco) {
+                refs += row('Banco', rb.banco);
+                refs += row('Agência/Conta', `${rb.agencia || ''} / ${rb.conta || ''}`);
+                refs += row('Tipo/Gerente', `${rb.tipo || ''} - ${rb.gerente || ''}`);
+            }
+        }
+        if (refs) html += section('Referências', refs, 'amber');
+    }
+
+    if (c.bens) {
+        let bens = '';
+        if (c.bens.imovel1 && c.bens.imovel1.endereco) {
+            bens += row('Imóvel 1', `${c.bens.imovel1.endereco} - R$ ${c.bens.imovel1.valor || ''}`);
+            bens += row('Matrícula', c.bens.imovel1.detalhes);
+        }
+        if (c.bens.veiculo1 && c.bens.veiculo1.marca) {
+            bens += row('Veículo 1', `${c.bens.veiculo1.marca} (${c.bens.veiculo1.ano || ''}) - Placa: ${c.bens.veiculo1.placa || ''}`);
+            bens += row('Financiado?', c.bens.veiculo1.financiado);
+        }
+        if (bens) html += section('Patrimônio (Bens)', bens, 'zinc');
+    }
+
+    pdfBody.innerHTML = html;
+    modal.classList.remove('hidden');
+};
+
+async function generatePDF() {
+    const element = document.getElementById('print-area');
+    const opt = {
+        margin: [10, 10],
+        filename: `Ficha_Cadastral_${Date.now()}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+}
