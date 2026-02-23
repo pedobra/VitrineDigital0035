@@ -305,10 +305,16 @@ async function loadPropertyData(id) {
 /**
  * Gestão de Fotos
  */
-const dropzone = document.getElementById('photo-dropzone');
 const fileInput = document.getElementById('f-photos');
-if (dropzone) dropzone.onclick = () => fileInput.click();
+const cameraInput = document.getElementById('f-camera');
+const btnGallery = document.getElementById('btn-select-gallery');
+const btnCamera = document.getElementById('btn-open-camera');
+
+if (btnGallery) btnGallery.onclick = () => fileInput.click();
+if (btnCamera) btnCamera.onclick = () => cameraInput.click();
+
 if (fileInput) fileInput.onchange = (e) => handleFiles(e.target.files);
+if (cameraInput) cameraInput.onchange = (e) => handleFiles(e.target.files);
 
 function handleFiles(files) {
     const newFiles = Array.from(files);
