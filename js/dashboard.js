@@ -8,13 +8,6 @@ import { supabase } from './supabase.js';
  */
 async function loadDashboardData() {
     try {
-        // 1. Identificar usuário autenticado para exibição
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-            const userDisplay = document.getElementById('user-display');
-            if (userDisplay) userDisplay.innerText = user.email;
-        }
-
         // 2. Buscar Contagens de Imóveis (Ativos vs Inativos)
         const { count: activeCount } = await supabase
             .from('imoveis')

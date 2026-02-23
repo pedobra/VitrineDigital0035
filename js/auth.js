@@ -13,14 +13,24 @@ async function initAuth() {
 
     try {
         const { data } = await supabase.auth.getSession();
-        
+
         // Se já tiver sessão, pula o login e vai pro dashboard
         if (data.session) {
-            window.location.href = "dashboard.html";
-            return;
+            if (isLoginPage) {
+                window.location.href = "dashboard.html";
+                return;
+            }
+
+            // Auto-preenchimento universal do cabeçalho admin
+            const user = data.session.user;
+            const userNameEl = document.getElementById('user-name');
+            const userEmailEl = document.getElementById('user-email');
+
+            if (userNameEl) userNameEl.innerText = user.user_metadata?.full_name || 'Usuário';
+            if (userEmailEl) userEmailEl.innerText = user.email;
         }
     } catch (e) {
-        console.warn("Erro na verificação de sessão, exibindo formulário.");
+        console.warn("Erro na verificação de sessão.");
     }
 
     // Se chegou aqui, não há sessão ou houve erro: mostra o formulário
@@ -38,7 +48,7 @@ const loginForm = document.getElementById('login-form');
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const errorDiv = document.getElementById('error-message');
@@ -56,8 +66,8 @@ if (loginForm) {
             window.location.href = 'dashboard.html';
         } catch (error) {
             if (errorDiv) {
-                errorDiv.innerText = error.message === 'Invalid login credentials' 
-                    ? 'E-mail ou senha inválidos.' 
+                errorDiv.innerText = error.message === 'Invalid login credentials'
+                    ? 'E-mail ou senha inválidos.'
                     : error.message;
                 errorDiv.classList.remove('hidden');
             }
