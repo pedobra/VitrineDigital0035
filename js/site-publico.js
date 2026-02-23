@@ -198,7 +198,9 @@ function renderCardList(imoveis, fotos) {
     return imoveis.map(imovel => {
         const foto = (fotos || []).find(f => f.imovel_id === imovel.id);
         const imagem = foto ? foto.url : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600';
-        const preco = formatarBRL(obterValorImovel(imovel));
+        const preco = imovel.ocultar_preco
+            ? '<span class="bg-blue-600 text-white px-3 py-1 text-sm font-black uppercase tracking-widest rounded-lg shadow-sm">Sob Consulta</span>'
+            : formatarBRL(obterValorImovel(imovel));
         const finalidade = imovel.finalidade || 'Venda';
         const referencia = imovel.referencia || `#${imovel.id.toString().slice(-4)}`;
         const specs = [];

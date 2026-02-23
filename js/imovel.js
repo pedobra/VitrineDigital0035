@@ -243,7 +243,9 @@ function renderizarImovel(p, config) {
     if (!container) return;
 
     const mainPhotoUrl = currentPhotos.length > 0 ? currentPhotos[0].url : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600';
-    const precoFormatado = formatarBRL(obterValorImovel(p));
+    const precoFormatado = p.ocultar_preco
+        ? '<span class="bg-blue-600 text-white px-4 py-2 text-xl md:text-2xl font-black uppercase tracking-widest rounded-xl shadow-lg mt-2 inline-block">Sob Consulta</span>'
+        : formatarBRL(obterValorImovel(p));
     const finalidadeLower = (p.finalidade || '').toLowerCase();
     const isAluguel = finalidadeLower === 'aluguel';
 

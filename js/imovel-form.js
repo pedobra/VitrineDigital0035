@@ -235,6 +235,7 @@ async function loadPropertyData(id) {
         document.getElementById('f-codigo').value = p.codigo_imovel || '';
         document.getElementById('f-title').value = p.titulo || '';
         document.getElementById('f-price').value = p.valor_venda || p.valor_locacao || '';
+        document.getElementById('f-ocultar-preco').checked = p.ocultar_preco || false;
         document.getElementById('f-tipo').value = p.tipo_imovel || 'casa';
         document.getElementById('f-status').value = p.status_imovel || 'ativo';
 
@@ -365,6 +366,7 @@ document.getElementById('property-form').onsubmit = async (e) => {
 
     const titulo = document.getElementById('f-title').value;
     const preco = Number(document.getElementById('f-price').value);
+    const ocultarPreco = document.getElementById('f-ocultar-preco').checked;
     const finalidade = document.getElementById('f-finalidade').value;
 
     const cep = document.getElementById('f-cep').value || null;
@@ -399,6 +401,7 @@ document.getElementById('property-form').onsubmit = async (e) => {
             area_total: Number(document.getElementById('f-area').value || 0),
             ativo: document.getElementById('f-status').value === 'ativo',
             destaque: document.getElementById('f-featured').checked,
+            ocultar_preco: ocultarPreco,
             updated_at: new Date().toISOString(),
             cep: cep,
             logradouro: logradouro,
