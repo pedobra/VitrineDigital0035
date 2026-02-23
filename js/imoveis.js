@@ -1,7 +1,10 @@
 import { supabase } from './supabase.js';
 
+let allImoveisCache = [];
+let allFotosCache = [];
+
 /**
- * Busca e renderiza a lista de imóveis com ordenação priorizada
+ * Busca e renderiza a lista de imóveis com ordenação priorizada e fotos
  */
 async function loadProperties() {
     try {
@@ -14,15 +17,21 @@ async function loadProperties() {
 
         if (error) throw error;
 
-        renderProperties(properties || []);
+        // Buscar as fotos de todos os imóveis carregados de uma vez
+        const { data: fotosData } = await supabase
+            .from('imoveis_fotos')
+            .select('*');
+
+        allImoveisCache = properties || [];
+        allFotosCache = fotosData || [];
+
+        renderProperties(allImoveisCache);
     } catch (err) {
         console.error('Erro ao carregar imóveis:', err.message);
         const feedback = `<p class="p-10 text-center text-red-500 font-medium">Erro ao carregar dados: ${err.message}</p>`;
 
         const tableBody = document.getElementById('properties-table-body');
         if (tableBody) tableBody.innerHTML = `<tr><td colspan="5">${feedback}</td></tr>`;
-
-
     }
 }
 
@@ -97,7 +106,10 @@ function renderProperties(properties) {
 
         // Imagem representativa (fallback se não houver foto)
         let firstImg = 'https://placehold.co/600x400/slate-100/slate-400?text=Sem+Foto';
-        if (p.fotos && p.fotos.length > 0) {
+        const foto = allFotosCache.find(f => f.imovel_id === p.id);
+        if (foto && foto.url) {
+            firstImg = foto.url;
+        } else if (p.fotos && p.fotos.length > 0) {
             try {
                 const f = JSON.parse(p.fotos);
                 if (Array.isArray(f) && f[0]) firstImg = f[0];
@@ -263,6 +275,38 @@ document.addEventListener('DOMContentLoaded', () => {
             // Switch Containers
             tableContainer.classList.replace('hidden', 'block');
             cardsContainer.classList.replace('grid', 'hidden');
+        });
+    }
+
+    // Setup Mobile Smart Search
+    const searchInput = document.getElementById('mobile-search-imoveis');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            if (!term) {
+                renderProperties(allImoveisCache);
+                return;
+            }
+
+            const filtered = allImoveisCache.filter(p => {
+                const titulo = (p.titulo || '').toLowerCase();
+                const cidade = (p.cidade || '').toLowerCase();
+                const bairro = (p.bairro || '').toLowerCase();
+                const ref = (p.referencia || '').toLowerCase();
+                const codigo = (p.codigo_imovel || '').toLowerCase();
+                const valVenda = p.valor_venda ? p.valor_venda.toString() : '';
+                const valLocacao = p.valor_locacao ? p.valor_locacao.toString() : '';
+
+                return titulo.includes(term) ||
+                    cidade.includes(term) ||
+                    bairro.includes(term) ||
+                    ref.includes(term) ||
+                    codigo.includes(term) ||
+                    valVenda.includes(term) ||
+                    valLocacao.includes(term);
+            });
+
+            renderProperties(filtered);
         });
     }
 });
