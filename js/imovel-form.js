@@ -14,19 +14,19 @@ let garantiasLocacao = [];
 
 // Listas de Características (Mantidas na UI para experiência do usuário)
 const LISTA_IMOVEL = [
-    "Ar condicionado", "Área de serviço", "Armário na cozinha", "Armário no quarto", 
-    "Armários projetados", "Box no banheiro", "Caixa d’água", "Cisterna", "Mobiliado"
-    "Dependência de empregada", "Quarto de empregada", "WC serviço", "Sala de estar", "Semi Mobiliado"
-    "Sala de jantar", "Sala de visita", "Varanda", "Varanda na sala", "Tela na varanda", 
-    "Nascente", "Rua asfaltada", "Piscina privativa", "Churrasqueira", "Jardim", 
+    "Ar condicionado", "Área de serviço", "Armário na cozinha", "Armário no quarto",
+    "Armários projetados", "Box no banheiro", "Caixa d’água", "Cisterna", "Mobiliado",
+    "Dependência de empregada", "Quarto de empregada", "WC serviço", "Sala de estar", "Semi Mobiliado",
+    "Sala de jantar", "Sala de visita", "Varanda", "Varanda na sala", "Tela na varanda",
+    "Nascente", "Rua asfaltada", "Piscina privativa", "Churrasqueira", "Jardim",
     "Quintal", "Escritório / Home office", "Closet", "Lavabo", "Pé-direito alto", "Energia solar"
 ];
 
 const LISTA_CONDOMINIO = [
-    "Acessível para deficientes", "Elevador", "Portaria 24h", "Guarita", "Portão eletrônico", 
-    "Gerador", "Bicicletário", "Brinquedoteca", "Playground", "Espaço gourmet", 
-    "Salão de festas", "Piscina (condomínio)", "Quadra poliesportiva (condomínio)", 
-    "Campo de futebol (condomínio)", "Condomínio fechado", "Rua asfaltada (condomínio)", 
+    "Acessível para deficientes", "Elevador", "Portaria 24h", "Guarita", "Portão eletrônico",
+    "Gerador", "Bicicletário", "Brinquedoteca", "Playground", "Espaço gourmet",
+    "Salão de festas", "Piscina (condomínio)", "Quadra poliesportiva (condomínio)",
+    "Campo de futebol (condomínio)", "Condomínio fechado", "Rua asfaltada (condomínio)",
     "Poço artesiano", "Academia", "Coworking", "Mercado interno", "Pet place"
 ];
 
@@ -34,31 +34,31 @@ const LISTA_CONDOMINIO = [
  * 4.1️⃣ FUNÇÃO DE UPLOAD
  */
 async function uploadFoto(file, imovelId, ordem, isCapa) {
-  const ext = file.name.split('.').pop();
-  const filePath = `${imovelId}/${crypto.randomUUID()}.${ext}`;
+    const ext = file.name.split('.').pop();
+    const filePath = `${imovelId}/${crypto.randomUUID()}.${ext}`;
 
-  const { error: uploadError } = await supabase
-    .storage
-    .from('imoveis')
-    .upload(filePath, file);
+    const { error: uploadError } = await supabase
+        .storage
+        .from('imoveis')
+        .upload(filePath, file);
 
-  if (uploadError) throw uploadError;
+    if (uploadError) throw uploadError;
 
-  const { data } = supabase
-    .storage
-    .from('imoveis')
-    .getPublicUrl(filePath);
+    const { data } = supabase
+        .storage
+        .from('imoveis')
+        .getPublicUrl(filePath);
 
-  const { error: dbError } = await supabase
-    .from('imoveis_fotos')
-    .insert({
-      imovel_id: imovelId,
-      url: data.publicUrl,
-      ordem: ordem,
-      is_capa: isCapa
-    });
+    const { error: dbError } = await supabase
+        .from('imoveis_fotos')
+        .insert({
+            imovel_id: imovelId,
+            url: data.publicUrl,
+            ordem: ordem,
+            is_capa: isCapa
+        });
 
-  if (dbError) throw dbError;
+    if (dbError) throw dbError;
 }
 
 /**
@@ -105,7 +105,7 @@ function generateImovelCode() {
 
 async function init() {
     renderAllChips();
-    
+
     // ETAPA 2 & 3 — CHECKBOXES (PAGAMENTO E GARANTIAS)
     const checkboxes = document.querySelectorAll('input[name="negociacao"]');
     checkboxes.forEach(checkbox => {
@@ -156,7 +156,7 @@ async function loadPropertyData(id) {
         document.getElementById('f-price').value = p.valor_venda || p.valor_locacao || '';
         document.getElementById('f-tipo').value = p.tipo_imovel || 'casa';
         document.getElementById('f-status').value = p.status_imovel || 'ativo';
-        
+
         // Finalidade - Prioriza coluna finalidade se existir, senão usa fallback
         if (p.finalidade) {
             document.getElementById('f-finalidade').value = p.finalidade;
@@ -171,7 +171,7 @@ async function loadPropertyData(id) {
         document.getElementById('f-area').value = p.area_m2 || '';
         document.getElementById('f-description').value = p.descricao || '';
         document.getElementById('f-featured').checked = p.destaque || false;
-        
+
         // Localização
         document.getElementById('f-bairro').value = p.bairro || '';
         document.getElementById('f-cidade').value = p.cidade || '';
@@ -275,7 +275,7 @@ document.getElementById('property-form').onsubmit = async (e) => {
     const titulo = document.getElementById('f-title').value;
     const preco = Number(document.getElementById('f-price').value);
     const finalidade = document.getElementById('f-finalidade').value;
-    
+
     const bairro = document.getElementById('f-bairro').value;
     const cidade = document.getElementById('f-cidade').value;
     const uf = document.getElementById('f-uf').value;
