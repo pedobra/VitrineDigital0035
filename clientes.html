@@ -3,10 +3,28 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <title>Gestão de Clientes - Vitrine Digital</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <!-- Script crítico para evitar FOUC -->
+    <script>
+        (function () {
+            try {
+                const theme = localStorage.getItem('imobimaster_theme_tokens');
+                if (theme) {
+                    const tokens = JSON.parse(theme);
+                    const root = document.documentElement;
+                    Object.entries(tokens).forEach(([key, value]) => {
+                        root.style.setProperty(key, value);
+                    });
+                }
+            } catch (e) { }
+        })();
+    </script>
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -30,7 +48,7 @@
             <a href="dashboard.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Visão Geral</a>
             <a href="leads.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Leads</a>
             <a href="imoveis.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Imóveis</a>
-            <a href="clientes.html" class="block p-3 bg-blue-600 rounded-lg">Clientes</a>
+            <a href="clientes.html" class="block p-3 bg-blue-600 text-white rounded-lg">Clientes</a>
             <a href="financeiro.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Financeiro</a>
             <a href="configuracoes.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Configurações</a>
         </nav>
@@ -580,11 +598,11 @@
                     <section id="sessao-pj-representantes" class="hidden space-y-8">
                         <div class="flex items-center justify-between">
                             <h3 class="text-xl font-black text-slate-900 flex items-center gap-3">
-                                <span class="w-1.5 h-8 bg-indigo-500 rounded-full"></span>
+                                <span class="w-1.5 h-8 bg-blue-500 rounded-full"></span>
                                 Representantes Legais
                             </h3>
                             <button type="button" id="btn-add-representante"
-                                class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition flex items-center gap-2">
+                                class="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-blue-700 transition flex items-center gap-2">
                                 <span>+ Adicionar Representante</span>
                             </button>
                         </div>

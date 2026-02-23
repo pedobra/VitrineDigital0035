@@ -45,6 +45,10 @@ nav.sticky,
     background-color: var(--color-primary) !important;
 }
 
+.bg-blue-50 {
+    background-color: var(--color-chip-bg) !important;
+}
+
 .hover\:bg-blue-700:hover {
     background-color: var(--color-primary-hover) !important;
 }
@@ -53,12 +57,26 @@ nav.sticky,
     color: var(--color-primary) !important;
 }
 
+.text-blue-700 {
+    color: var(--color-chip-text) !important;
+}
+
 .border-blue-600 {
     border-color: var(--color-primary) !important;
 }
 
+.border-blue-200,
+.border-blue-100 {
+    border-color: var(--color-badge-alt) !important;
+}
+
 .ring-blue-100 {
     --tw-ring-color: var(--color-badge-alt) !important;
+}
+
+.shadow-blue-200,
+.shadow-blue-100 {
+    --tw-shadow-color: var(--color-primary) !important;
 }
 
 /* Filtros de Badges */
