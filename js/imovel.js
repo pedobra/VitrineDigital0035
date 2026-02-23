@@ -369,6 +369,23 @@ function renderizarImovel(p, config) {
                         </div>` : ''}
                     </div>
 
+                    ${(p.exibir_endereco_completo && p.logradouro) ? `
+                    <div class="bg-white p-8 md:p-12 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+                        <h2 class="text-2xl font-black text-slate-900 flex items-center gap-3">
+                            <span class="w-1.5 h-8 bg-blue-600 rounded-full"></span>
+                            Localização
+                        </h2>
+                        <div class="w-full h-64 md:h-80 rounded-[1.5rem] overflow-hidden relative shadow-inner border border-slate-100 group">
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(enderecoExibicao.replace(' - ', ', '))}" target="_blank" class="absolute inset-0 z-10 bg-black/0 hover:bg-black/5 transition-colors flex items-center justify-center text-transparent hover:text-white font-bold cursor-pointer">
+                                <span class="bg-blue-600 px-6 py-3 rounded-full text-[10px] md:text-xs uppercase font-black tracking-widest opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 shadow-xl hover:scale-105 active:scale-95 duration-300">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    Ver rota no Google Maps
+                                </span>
+                            </a>
+                            <iframe src="https://maps.google.com/maps?q=${encodeURIComponent(enderecoExibicao.replace(' - ', ', '))}&t=m&z=16&output=embed&iwloc=near" class="w-full h-full border-0 pointer-events-none" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>` : ''}
+
                     ${(negopay.length > 0 || (isAluguel && garantiasArray.length > 0)) ? `
                     <div class="space-y-8 bg-slate-50/50 p-8 md:p-12 rounded-[2.5rem] border border-slate-100">
                         <h2 class="text-2xl font-black text-slate-900 flex items-center gap-3">
