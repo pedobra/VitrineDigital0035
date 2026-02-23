@@ -22,8 +22,7 @@ async function loadProperties() {
         const tableBody = document.getElementById('properties-table-body');
         if (tableBody) tableBody.innerHTML = `<tr><td colspan="5">${feedback}</td></tr>`;
 
-        const mobileContainer = document.getElementById('properties-cards-mobile');
-        if (mobileContainer) mobileContainer.innerHTML = feedback;
+
     }
 }
 
@@ -32,9 +31,7 @@ async function loadProperties() {
  */
 function renderProperties(properties) {
     const tableBody = document.getElementById('properties-table-body');
-    const mobileCards = document.getElementById('properties-cards-mobile');
-
-    if (!tableBody || !mobileCards) return;
+    if (!tableBody) return;
 
     if (properties.length === 0) {
         const emptyState = `
@@ -43,7 +40,6 @@ function renderProperties(properties) {
             </div>
         `;
         tableBody.innerHTML = `<tr><td colspan="5">${emptyState}</td></tr>`;
-        mobileCards.innerHTML = emptyState;
         return;
     }
 
