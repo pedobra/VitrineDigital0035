@@ -538,9 +538,9 @@ async function initSite() {
 function applySiteSettings(config) {
     if (config.color_scheme) applyColorScheme(resolveColorScheme(config.color_scheme));
     const logoText = document.getElementById('site-logo-text');
-    if (logoText) logoText.innerText = config.header_nome_site || 'ImobiMaster';
+    if (logoText) logoText.innerText = config.header_nome_site || 'ImobiRecife';
     const footerLogo = document.getElementById('footer-logo-text-bottom');
-    if (footerLogo) footerLogo.innerText = config.footer_titulo || config.header_nome_site || 'ImobiMaster';
+    if (footerLogo) footerLogo.innerText = config.footer_titulo || config.header_nome_site || 'ImobiRecife';
     const footerBio = document.getElementById('footer-bio-text');
     if (footerBio) footerBio.innerText = config.footer_bio || 'Especialistas em encontrar o lar dos seus sonhos.';
     const footerCreci = document.getElementById('footer-creci-text');
@@ -609,7 +609,7 @@ function applySiteSettings(config) {
     const heroSub = document.querySelector('header p');
     if (heroSub && config.hero_subtitulo) heroSub.innerText = config.hero_subtitulo;
     const footerCopy = document.getElementById('footer-copyright-text');
-    if (footerCopy) { footerCopy.innerText = config.footer_copyright || config.rodape_texto || `© ${new Date().getFullYear()} ${config.header_nome_site || 'ImobiMaster'}`; }
+    if (footerCopy) { footerCopy.innerText = config.footer_copyright || config.rodape_texto || `© ${new Date().getFullYear()} ${config.header_nome_site || 'ImobiRecife'}`; }
 
     // APLICAÇÃO DINÂMICA DO BOTÃO FLUTUANTE
     const waBtn = document.getElementById('whatsapp-floating-btn');
