@@ -168,50 +168,50 @@ function renderLeads(leads) {
         }
 
         return `
-            <div class="bg-white p-6 rounded-[1.5rem] shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow group animate-in fade-in slide-in-from-bottom-2 duration-300" id="lead-card-${l.id}">
-                <div class="space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-sm font-black text-slate-500">
-                                ${l.nome ? l.nome.charAt(0).toUpperCase() : '?'}
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-slate-900 leading-tight">${l.nome || 'Cliente não identificado'}</h3>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">${date}</p>
-                            </div>
+            <div class="bg-[#f8fafc] p-2 rounded-[2rem] border-2 border-slate-100 hover:border-slate-200 transition-all flex flex-col gap-2 animate-in fade-in slide-in-from-bottom-2 duration-300" id="lead-card-${l.id}">
+                
+                <div class="bg-white p-5 rounded-[1.5rem] shadow-sm flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-slate-900 rounded-full text-white flex items-center justify-center font-bold">
+                            ${l.nome ? l.nome.charAt(0).toUpperCase() : '?'}
                         </div>
-                        <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter ${originClass} whitespace-nowrap">
-                            ${formatOriginLabel(l.origem)}
-                        </span>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-md leading-none mb-1">${l.nome || 'Cliente não identificado'}</h3>
+                            <p class="text-[10px] font-bold text-slate-400">${date}</p>
+                        </div>
                     </div>
-
-                    <div class="space-y-2 pt-2">
-                        <div class="flex items-center gap-2 text-slate-600 text-sm">
-                            <span class="opacity-50">📞</span>
-                            <span class="font-semibold">${l.telefone || 'Não informado'}</span>
-                        </div>
-                        ${lowerOrigin.includes('footer') && l.email ? `
-                        <div class="flex items-center gap-2 text-slate-600 text-sm mt-1">
-                            <span class="opacity-50">✉️</span>
-                            <span class="font-semibold truncate" title="${l.email}">${l.email}</span>
-                        </div>
-                        ` : ''}
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 mt-2">
-                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Interesse</p>
-                            <p class="text-xs font-bold text-slate-700 truncate">${l.imovel_interesse || 'Geral'}</p>
-                        </div>
+                    <div class="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${originClass}">
+                        ${formatOriginLabel(l.origem)}
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between gap-4 mt-8 pt-4 border-t border-slate-50">
-                    <button onclick="deleteLead('${l.id}')" class="text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-all flex items-center gap-1.5 text-xs font-bold" title="Excluir Lead">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                        Excluir
+                <div class="bg-white p-5 rounded-[1.5rem] shadow-sm space-y-2">
+                    <p class="text-sm font-bold text-slate-600 flex justify-between items-center">
+                        <span class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Telefone</span> 
+                        <span>${l.telefone || 'Não informado'}</span>
+                    </p>
+                    ${lowerOrigin.includes('footer') && l.email ? `
+                    <div class="h-px bg-slate-50 w-full my-1"></div>
+                    <p class="text-sm font-bold text-slate-600 flex justify-between items-center">
+                        <span class="text-slate-400 text-[10px] font-black uppercase tracking-widest">E-mail</span> 
+                        <span class="truncate max-w-[150px]" title="${l.email}">${l.email}</span>
+                    </p>
+                    ` : ''}
+                    <div class="h-px bg-slate-50 w-full my-1"></div>
+                    <p class="text-sm font-bold text-slate-600 flex justify-between items-center">
+                        <span class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Interesse</span> 
+                        <span class="truncate max-w-[130px]" title="${l.imovel_interesse || 'Geral'}">${l.imovel_interesse || 'Geral'}</span>
+                    </p>
+                </div>
+
+                <div class="flex gap-2">
+                    <button onclick="deleteLead('${l.id}')" class="w-16 bg-white rounded-[1.5rem] flex items-center justify-center text-red-400 hover:text-red-500 hover:bg-red-50 shadow-sm border border-transparent hover:border-red-100 transition-all focus:scale-95" title="Excluir Lead">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     </button>
                     
-                    <a href="${waLink}" target="_blank" class="flex-1 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold text-xs hover:bg-emerald-600 transition-all active:scale-95 shadow-lg shadow-emerald-100 flex items-center justify-center gap-2 text-center">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.417-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.305 1.652zm6.599-3.835c1.405.836 2.755 1.28 4.301 1.281 5.177 0 9.389-4.213 9.391-9.391 0-2.512-.975-4.87-2.747-6.645s-4.131-2.744-6.641-2.745c-5.181 0-9.392 4.213-9.395 9.393 0 1.608.434 3.182 1.258 4.587l-.937 3.421 3.49-.916zm11.22-7.259c.302-.15.302-.501.05-.651-.251-.151-1.488-.732-1.714-.813-.226-.082-.389-.121-.55.121s-.622.772-.763.933c-.14.161-.282.181-.582.031s-1.266-.467-2.411-1.487c-.891-.793-1.492-1.773-1.667-2.074-.176-.301-.019-.464.131-.614.135-.135.301-.351.452-.527.151-.176.201-.292.301-.482.1-.191.05-.361-.026-.511-.076-.151-.55-1.328-.753-1.817-.197-.474-.4-.41-.55-.418s-.311-.008-.477-.008-.437.061-.664.311c-.226.251-.865.842-.865 2.05s.879 2.373 1.005 2.541c.125.168 1.733 2.646 4.197 3.711.586.254 1.044.405 1.401.518.589.187 1.125.161 1.549.098.473-.07 1.488-.607 1.701-1.192.214-.584.214-1.085.15-1.192-.063-.107-.226-.171-.528-.221z"/></svg>
-                        WhatsApp
+                    <a href="${waLink}" target="_blank" class="flex-1 bg-emerald-500 text-white rounded-[1.5rem] py-4 font-bold text-md hover:bg-emerald-600 shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.417-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.305 1.652zm6.599-3.835c1.405.836 2.755 1.28 4.301 1.281 5.177 0 9.389-4.213 9.391-9.391 0-2.512-.975-4.87-2.747-6.645s-4.131-2.744-6.641-2.745c-5.181 0-9.392 4.213-9.395 9.393 0 1.608.434 3.182 1.258 4.587l-.937 3.421 3.49-.916zm11.22-7.259c.302-.15.302-.501.05-.651-.251-.151-1.488-.732-1.714-.813-.226-.082-.389-.121-.55.121s-.622.772-.763.933c-.14.161-.282.181-.582.031s-1.266-.467-2.411-1.487c-.891-.793-1.492-1.773-1.667-2.074-.176-.301-.019-.464.131-.614.135-.135.301-.351.452-.527.151-.176.201-.292.301-.482.1-.191.05-.361-.026-.511-.076-.151-.55-1.328-.753-1.817-.197-.474-.4-.41-.55-.418s-.311-.008-.477-.008-.437.061-.664.311c-.226.251-.865.842-.865 2.05s.879 2.373 1.005 2.541c.125.168 1.733 2.646 4.197 3.711.586.254 1.044.405 1.401.518.589.187 1.125.161 1.549.098.473-.07 1.488-.607 1.701-1.192.214-.584.214-1.085.15-1.192-.063-.107-.226-.171-.528-.221z"/></svg>
+                        Chamar no Web
                     </a>
                 </div>
             </div>
