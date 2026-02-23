@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Clientes - Vitrine Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 flex flex-col md:flex-row min-h-screen">
+    <aside class="w-full md:w-64 bg-slate-900 md:min-h-screen text-white p-6 sticky top-0 z-50">
+        <div class="flex items-center justify-between md:block">
+            <h2 class="text-xl font-bold md:mb-10">Painel Administrativo</h2>
+            <button class="md:hidden text-slate-400"
+                onclick="document.getElementById('mobile-nav').classList.toggle('hidden')">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <nav id="mobile-nav" class="hidden md:block space-y-2 mt-6 md:mt-0">
+            <a href="dashboard.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Visão Geral</a>
+            <a href="leads.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Leads</a>
+            <a href="imoveis.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Imóveis</a>
+            <a href="clientes.html" class="block p-3 bg-blue-600 rounded-lg">Clientes</a>
+            <a href="financeiro.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Financeiro</a>
+            <a href="configuracoes.html" class="block p-3 hover:bg-slate-800 rounded-lg transition">Configurações</a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-6 md:p-10">
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900">Gestão de Clientes</h1>
+                <p class="text-slate-500 text-sm">Registro de Pessoas Físicas e Jurídicas.</p>
+            </div>
+            <button id="btn-novo-cliente"
+                class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700 transition">
+                <span>+ Novo Cliente</span>
+            </button>
+        </header>
+
+        <!-- Lista de Clientes -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="font-bold text-slate-700">Todos os Clientes</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-black tracking-widest">
+                        <tr>
+                            <th class="px-6 py-4">Documento</th>
+                            <th class="px-6 py-4">Nome / Razão Social</th>
+                            <th class="px-6 py-4">Tipo</th>
+                            <th class="px-6 py-4">Contato</th>
+                            <th class="px-6 py-4 text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-clientes-body">
+                        <!-- Carregado via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Form -->
+    <div id="modal-cliente"
+        class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div
+            class="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-[2.5rem] shadow-2xl p-8 md:p-12 relative">
+            <button id="btn-close-modal" class="absolute top-8 right-8 text-slate-400 hover:text-slate-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+
+            <h2 id="modal-title" class="text-2xl font-black text-slate-900 mb-8">Novo Cadastro</h2>
+
+            <form id="form-cliente" class="space-y-8">
+                <!-- CAMPO PRINCIPAL (ÚNICO NO INÍCIO) -->
+                <div class="bg-blue-50/50 p-6 md:p-8 rounded-2xl border border-blue-100 mb-8">
+                    <label class="block text-sm font-black text-blue-900 uppercase tracking-widest mb-3 text-center">CPF
+                        ou CNPJ do Cliente</label>
+                    <input type="text" id="f-documento" required placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                        class="w-full p-6 text-center text-2xl font-black text-blue-600 bg-white border-2 border-blue-200 rounded-2xl outline-none focus:ring-4 focus:ring-blue-100 transition-all">
+                    <p id="msg-help"
+                        class="text-center text-xs text-blue-600/60 mt-3 font-bold uppercase tracking-wider">O
+                        formulário será liberado após o preenchimento do documento</p>
+                </div>
+
+                <!-- SEÇÕES OCULTAS QUE ABREM CONFORME DOCUMENTO -->
+                <div id="campos-detalhados"
+                    class="hidden space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+                    <!-- DADOS BÁSICOS (COMUM) -->
+                    <section class="space-y-6">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span class="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+                            Dados Gerais
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label id="label-nome" class="block text-sm font-semibold mb-2 text-slate-700">Nome
+                                    Completo</label>
+                                <input id="f-nome" type="text" required
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div id="div-fantasia" class="hidden">
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Nome Fantasia</label>
+                                <input id="f-fantasia" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">E-mail</label>
+                                <input id="f-email" type="email"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Celular /
+                                    WhatsApp</label>
+                                <input id="f-celular" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- BLOCO PESSOA FÍSICA -->
+                    <section id="sessao-pf" class="hidden space-y-6">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span class="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+                            Dados Pessoais
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">RG</label>
+                                <input id="f-rg" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Data Nascimento</label>
+                                <input id="f-nascimento" type="date"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Estado Civil</label>
+                                <select id="f-civil"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="solteiro">Solteiro</option>
+                                    <option value="casado">Casado</option>
+                                    <option value="uniao">União Estável</option>
+                                    <option value="divorciado">Divorciado</option>
+                                    <option value="viuvo">Viúvo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- BLOCO PESSOA JURÍDICA -->
+                    <section id="sessao-pj" class="hidden space-y-6">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span class="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+                            Representantes da Empresa
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">Sócio/Representante 1
+                                    (Nome)</label>
+                                <input id="f-rep1-nome" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-slate-700">CPF Rep. 1</label>
+                                <input id="f-rep1-cpf" type="text"
+                                    class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                            </div>
+                        </div>
+                    </section>
+
+                    <button type="submit"
+                        class="w-full bg-blue-600 text-white p-6 rounded-2xl text-lg font-black uppercase tracking-widest shadow-xl shadow-blue-100 hover:bg-blue-700 transition">Salvar
+                        Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/clientes.js"></script>
+</body>
+
+</html>
